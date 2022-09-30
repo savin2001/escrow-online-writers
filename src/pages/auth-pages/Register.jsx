@@ -36,7 +36,7 @@ const Register = () => {
         .then(() => {
           sendEmailVerification(auth.currentUser)
             .then(() => {
-              setTimeActive(true);
+              //setTimeActive(true);
               navigate("/verify-email");
             })
             .catch((err) => alert(err.message));

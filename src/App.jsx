@@ -9,6 +9,7 @@ import Register from "./pages/auth-pages/Register";
 import About from "./pages/home-pages/About";
 import Contact from "./pages/home-pages/Contact";
 import Home from "./pages/home-pages/Home";
+import VerifyEmail from "./pages/auth-pages/VerifyEmail";
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -32,7 +33,7 @@ function App() {
             {/* Authentication pages */}
             <Route path="sign-up" element={<Register />} />
             <Route path="sign-in" element={<Login />} />
-
+            <Route path="verify-email" element={<VerifyEmail />} />
             {/* Admin pages */}
 
             {/* Writer pages */}
