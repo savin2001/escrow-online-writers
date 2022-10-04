@@ -1,7 +1,18 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../assets/firebase/firebase";
 
 const Navbar = () => {
+  // User state
+  const [currentUser, setCurrentUser] = useState(null);
+
+  // Check if the user is logged in
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+    });
+  }, []);
   return (
     <div className="navbar bg-base-100 shadow-lg">
       <div className="navbar-start">
@@ -24,14 +35,27 @@ const Navbar = () => {
           </label>
           <ul
             tabIndex={0}
-            className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+            className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 capitalize"
           >
-            <li>
-              <Link to={"/about"}>About</Link>
-            </li>
-            <li>
-              <Link to={"/contact"}>Contact</Link>
-            </li>
+            {!currentUser?.emailVerified ? (
+              <>
+                <li>
+                  <Link to={"/about"}>About</Link>
+                </li>
+                <li>
+                  <Link to={"/contact"}>Contact</Link>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <Link to={"/profile"}>My Profile</Link>
+                </li>
+                <li>
+                  <Link to={"/contact"}>Others</Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
         <Link to={"/"} className="btn btn-ghost normal-case text-xl">
@@ -49,7 +73,7 @@ const Navbar = () => {
         </ul>
       </div>
       <div className="navbar-end">
-        <Link to={"/sign-up"} className="btn">
+        <Link to={"/login"} className="btn">
           Get started
         </Link>
       </div>

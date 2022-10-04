@@ -1,47 +1,77 @@
-import React, { useState, useEffect } from "react";
-import { auth } from "./assets/firebase/firebase";
-import {AuthProvider} from "./assets/firebase/AuthContext"
-import { onAuthStateChanged } from "firebase/auth";
+import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import Login from "./pages/auth-pages/Login";
-import Register from "./pages/auth-pages/Register";
-import About from "./pages/home-pages/About";
-import Contact from "./pages/home-pages/Contact";
-import Home from "./pages/home-pages/Home";
-import VerifyEmail from "./pages/auth-pages/VerifyEmail";
+import Profile from "./Profile";
+import Register from "./Register";
+import VerifyEmail from "./VerifyEmail";
+import Login from "./Login";
+import { AuthProvider } from "./assets/firebase/AuthContext";
+import { auth } from "./assets/firebase/firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import PrivateRoute from "./PrivateRoute";
+import { Navigate } from "react-router-dom";
+import Home from "./pages/common/Home";
 
 function App() {
+  // User state
   const [currentUser, setCurrentUser] = useState(null);
+  const [timeActive, setTimeActive] = useState(false);
 
+  // Check if the user is logged in
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
     });
   }, []);
+
   return (
-    <div className="App">
-      <Router>
-        <AuthProvider value={{ currentUser }}>
-          <Navbar />
-          <Routes>
-            {/* Landing pages */}
-            <Route path="/" element={<Home />} />
-            <Route path="about" element={<About />} />
-            <Route path="contact" element={<Contact />} />
-
-            {/* Authentication pages */}
-            <Route path="sign-up" element={<Register />} />
-            <Route path="sign-in" element={<Login />} />
-            <Route path="verify-email" element={<VerifyEmail />} />
-            {/* Admin pages */}
-
-            {/* Writer pages */}
-            {/*  */}
-          </Routes>
-        </AuthProvider>
-      </Router>
-    </div>
+    <Router>
+      <AuthProvider value={{ currentUser, timeActive, setTimeActive }}>
+        <Navbar />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              !currentUser?.emailVerified ? (
+                <Home />
+              ) : (
+                <Navigate to="/profile" replace />
+              )
+            }
+          />
+          <Route
+            exact
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              !currentUser?.emailVerified ? (
+                <Login />
+              ) : (
+                <Navigate to="/profile" replace />
+              )
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              !currentUser?.emailVerified ? (
+                <Register />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+          <Route path="/verify-email" element={<VerifyEmail />} />
+        </Routes>
+      </AuthProvider>
+    </Router>
   );
 }
 
