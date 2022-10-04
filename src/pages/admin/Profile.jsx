@@ -1,6 +1,6 @@
-import {useAuthValue} from './assets/firebase/AuthContext'
+import {useAuthValue} from '../../assets/firebase/AuthContext'
 import { signOut } from 'firebase/auth' 
-import { auth } from './assets/firebase/firebase'
+import { auth } from '../../assets/firebase/firebase'
 
 
 function Profile() {

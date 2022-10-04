@@ -1,5 +1,5 @@
 import {Navigate} from 'react-router-dom'
-import {useAuthValue} from './assets/firebase/AuthContext'
+import {useAuthValue} from '../firebase/AuthContext'
 
 export default function PrivateRoute({children}) {
   const {currentUser} = useAuthValue()

@@ -1,9 +1,9 @@
 import {useState} from 'react'
 import { Link } from 'react-router-dom'
 import {signInWithEmailAndPassword, sendEmailVerification} from 'firebase/auth'
-import {auth} from './assets/firebase/firebase'
+import {auth} from '../../assets/firebase/firebase'
 import {useNavigate} from 'react-router-dom'
-import {useAuthValue} from './assets/firebase/AuthContext'
+import {useAuthValue} from '../../assets/firebase/AuthContext'
 
 
 function Login(){

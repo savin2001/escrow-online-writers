@@ -1,8 +1,8 @@
 import {useState} from 'react'
-import {auth} from './assets/firebase/firebase'
+import {auth} from '../../assets/firebase/firebase'
 import {useNavigate, Link} from 'react-router-dom'
 import {createUserWithEmailAndPassword, sendEmailVerification} from 'firebase/auth'
-import {useAuthValue} from './assets/firebase/AuthContext'
+import {useAuthValue} from '../../assets/firebase/AuthContext'
 
 function Register() {
 

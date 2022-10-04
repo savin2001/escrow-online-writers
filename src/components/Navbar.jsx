@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../assets/firebase/firebase";
+import { signOut } from "firebase/auth";
 
 const Navbar = () => {
   // User state
@@ -73,9 +74,19 @@ const Navbar = () => {
         </ul>
       </div>
       <div className="navbar-end">
-        <Link to={"/login"} className="btn">
-          Get started
-        </Link>
+        {!currentUser?.emailVerified ? (
+          <>
+            <Link to={"/login"} className="btn">
+              Get started
+            </Link>
+          </>
+        ) : (
+          <>
+            <span className="btn" onClick={() => signOut(auth)}>
+              Sign Out
+            </span>
+          </>
+        )}
       </div>
     </div>
   );
