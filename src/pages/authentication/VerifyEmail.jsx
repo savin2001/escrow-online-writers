@@ -18,7 +18,13 @@ function VerifyEmail() {
         .then(() => {
           if (currentUser?.emailVerified) {
             clearInterval(interval);
+            // Separate the users into groups
             navigate("/profile");
+            // if (userType === "admin") {
+            // } else if (userType === "writer") {
+            // } else {
+            // }
+            
           }
         })
         .catch((err) => {

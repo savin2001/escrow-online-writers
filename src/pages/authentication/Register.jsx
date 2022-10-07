@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { auth, db } from "../../assets/firebase/firebase";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, doc, setDoc, addDoc } from "firebase/firestore";
 import { useNavigate, Link } from "react-router-dom";
 import {
   createUserWithEmailAndPassword,
@@ -33,17 +33,34 @@ function Register() {
     setError("");
     if (validatePassword()) {
       // Create a new user with email and password using firebase
+
       createUserWithEmailAndPassword(auth, email, password)
         .then(async () => {
           if (userType.length > 0) {
             try {
-              const docRef = await addDoc(collection(db, "users"), {
-                email: email,
-                user_type: userType,
-              });
-              console.log("Document written with ID: ", docRef.id);
+              if (userType === "admin") {
+                const adminRef = doc(db, "users", "admin");
+                await setDoc(
+                  adminRef,
+                  await addDoc(collection(db, "users", "admin", email), {
+                    uid: auth.currentUser.uid,
+                    email: email,
+                  }),
+                  { merge: true }
+                );
+              } else {
+                const writerRef = doc(db, "users", "writer");
+                await setDoc(
+                  writerRef,
+                  await addDoc(collection(db, "users", "writer", email), {
+                    uid: auth.currentUser.uid,
+                    email: email,
+                  }),
+                  { merge: true }
+                );
+              }
             } catch (e) {
-              console.error("Error adding document: ", e);
+              setError("Error adding document: ", e);
             }
           }
         })
@@ -56,12 +73,6 @@ function Register() {
             .catch((err) => alert(err.message));
         })
         .catch((err) => setError(err.message));
-
-      // Separate the users into groups
-      if (userType === "admin") {
-      } else if (userType === "writer") {
-      } else {
-      }
     }
     setEmail("");
     setPassword("");
