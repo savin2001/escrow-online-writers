@@ -87,9 +87,9 @@ function Register() {
           }
         })
         .then(() => {
-          if (error.length > 0) {
-            setLoading(false);
-          } else {
+          // if (error.length > 0) {
+          //   setLoading(false);
+          // } else {
             sendEmailVerification(auth.currentUser)
               .then(() => {
                 setTimeActive(true);
@@ -100,7 +100,7 @@ function Register() {
                 setLoading(false);
                 setError(err.message);
               });
-          }
+          // }
         })
         .catch((err) => {
           setLoading(false);
