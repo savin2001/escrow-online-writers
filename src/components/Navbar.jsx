@@ -59,7 +59,7 @@ const Navbar = () => {
             )}
           </ul>
         </div>
-        <Link to={"/"} className="btn btn-ghost normal-case text-2xl">
+        <Link to={"/"} className="btn btn-ghost normal-case text-xl">
           <span className="pr-2">Escrow </span> <span className="text-primary">Writers</span>
         </Link>
       </div>
@@ -76,13 +76,13 @@ const Navbar = () => {
       <div className="navbar-end">
         {!currentUser?.emailVerified ? (
           <>
-            <Link to={"/login"} className="btn btn-primary">
+            <Link to={"/login"} className="btn btn-sm btn-primary">
               Get started
             </Link>
           </>
         ) : (
           <>
-            <span className="btn btn-error" onClick={() => signOut(auth)}>
+            <span className="btn btn-sm btn-error" onClick={() => signOut(auth)}>
               Sign Out
             </span>
           </>
