@@ -15,7 +15,7 @@ const Navbar = () => {
     });
   }, []);
   return (
-    <div className="navbar bg-base-100 shadow-lg">
+    <div className="navbar bg-base-100 shadow-lg fixed">
       <div className="navbar-start">
         <div className="dropdown">
           <label tabIndex={0} className="btn btn-ghost lg:hidden">
@@ -59,8 +59,8 @@ const Navbar = () => {
             )}
           </ul>
         </div>
-        <Link to={"/"} className="btn btn-ghost normal-case text-xl">
-          Escrow Writers
+        <Link to={"/"} className="btn btn-ghost normal-case text-2xl">
+          <span className="pr-2">Escrow </span> <span className="text-primary">Writers</span>
         </Link>
       </div>
       <div className="navbar-center hidden lg:flex">
@@ -76,13 +76,13 @@ const Navbar = () => {
       <div className="navbar-end">
         {!currentUser?.emailVerified ? (
           <>
-            <Link to={"/login"} className="btn">
+            <Link to={"/login"} className="btn btn-primary">
               Get started
             </Link>
           </>
         ) : (
           <>
-            <span className="btn" onClick={() => signOut(auth)}>
+            <span className="btn btn-error" onClick={() => signOut(auth)}>
               Sign Out
             </span>
           </>
