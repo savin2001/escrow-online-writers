@@ -68,9 +68,8 @@ function VerifyEmail() {
               <h3 className="mt-9 lg:text-2xl sm:text-xl text-primary pb-6 text-center">
                 Verify your email...
               </h3>
-
               <div className="flex justify-center items-center h-3/4">
-                {/* <FaSpinner className="h-1/4 w-1/4 text-primary animate-spin" /> */}
+                <FaSpinner className="h-1/4 w-1/4 text-primary animate-spin" />
               </div>
             </div>
           ) : (
@@ -90,10 +89,12 @@ function VerifyEmail() {
                   <span className="text-primary my-12 px-5">
                     {currentUser?.email}
                   </span>
+                </p><p  className="text-neutral mb-4">
+                  Check you inbox or spam for the verification email. 
                 </p>
-                <span className="text-neutral my-8">
+                <p className="text-neutral mb-8">
                   Follow the instruction in the email to verify your account
-                </span>
+                </p>
                 <div>
                   <button
                     onClick={resendEmailVerification}

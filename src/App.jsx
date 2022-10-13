@@ -77,6 +77,8 @@ function App() {
               </PrivateRoute>
             }
           />
+
+          {/* Admin pages */}
         </Routes>
       </AuthProvider>
     </Router>
