@@ -1,6 +1,6 @@
 # IMPLEMENTING ESCROW IN ONLINE WRITING PAYMENTS
 
-Here is the [link](https://escrow-writers.netlify.app/) to tye demo site.
+Here is the [link](https://escrow-writers.netlify.app/) to the demo site.
 
 ## ABSTRACT
 

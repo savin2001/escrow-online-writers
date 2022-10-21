@@ -25,7 +25,7 @@ function Register() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { setTimeActive } = useAuthValue();
+  const { currentUser, setTimeActive } = useAuthValue();
 
   // Password visible
   const checkPassword = () => {
@@ -65,7 +65,7 @@ function Register() {
                 await setDoc(
                   adminRef,
                   await addDoc(collection(db, "users", "admin", email), {
-                    uid: auth.currentUser.uid,
+                    uid: currentUser.uid,
                     email: email,
                   }),
                   { merge: true }
@@ -75,7 +75,7 @@ function Register() {
                 await setDoc(
                   writerRef,
                   await addDoc(collection(db, "users", "writer", email), {
-                    uid: auth.currentUser.uid,
+                    uid: currentUser.uid,
                     email: email,
                   }),
                   { merge: true }

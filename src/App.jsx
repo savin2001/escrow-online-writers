@@ -13,6 +13,10 @@ import Home from "./pages/common/Home";
 import About from "./pages/common/About";
 import Contact from "./pages/common/Contact";
 import PageNotFound from "./pages/common/PageNotFound";
+import Dashboard from "./pages/admin/Dashboard";
+import Payment from "./pages/admin/Payment";
+import Tasks from "./pages/admin/Tasks";
+import Writers from "./pages/admin/Writers";
 
 function App() {
   // User state
@@ -38,7 +42,7 @@ function App() {
               !currentUser?.emailVerified ? (
                 <Home />
               ) : (
-                <Navigate to="/profile" replace />
+                <Navigate to={`/:uid/profile`} replace />
               )
             }
           />
@@ -51,7 +55,7 @@ function App() {
               !currentUser?.emailVerified ? (
                 <Login />
               ) : (
-                <Navigate to="/profile" replace />
+                <Navigate to={`/:uid/profile`} replace />
               )
             }
           />
@@ -61,22 +65,58 @@ function App() {
               !currentUser?.emailVerified ? (
                 <Register />
               ) : (
-                <Navigate to="/profile" replace />
+                <Navigate to={`/:uid/profile`} replace />
               )
             }
           />
           <Route path="/verify-email" element={<VerifyEmail />} />
+
+          {/* Admin pages */}
           <Route
             exact
-            path="/profile"
+            path={`/:uid/dashboard`}
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            exact
+            path={`/:uid/payments`}
+            element={
+              <PrivateRoute>
+                <Payment />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            exact
+            path={`/:uid/tasks`}
+            element={
+              <PrivateRoute>
+                <Tasks />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            exact
+            path={`/:uid/writers`}
+            element={
+              <PrivateRoute>
+                <Writers />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            exact
+            path={`/:uid/profile`}
             element={
               <PrivateRoute>
                 <Profile />
               </PrivateRoute>
             }
           />
-
-          {/* Admin pages */}
         </Routes>
       </AuthProvider>
     </Router>

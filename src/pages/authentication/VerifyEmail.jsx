@@ -22,7 +22,7 @@ function VerifyEmail() {
           if (currentUser?.emailVerified) {
             clearInterval(interval);
             // Separate the users into groups
-            navigate("/profile");
+            navigate(`/${currentUser.uid}/profile`);
             // if (userType === "admin") {
             // } else if (userType === "writer") {
             // } else {

@@ -1,6 +1,4 @@
 import { useAuthValue } from "../../assets/firebase/AuthContext";
-import { signOut } from "firebase/auth";
-import { auth } from "../../assets/firebase/firebase";
 import FileUpload from "../../components/FileUpload";
 import ListFiles from "../../components/ListFiles";
 import Navbar from "../../components/Navbar";
@@ -73,7 +71,7 @@ function Profile() {
                             name="email"
                             autoComplete="given-name"
                             placeholder="Email address"
-                            value={currentUser?.email}
+                            defaultValue={currentUser?.email}
                             className="input input-bordered input-neutral w-full rounded-full focus:input-primary"
                           />
                         </div>
@@ -154,7 +152,7 @@ function Profile() {
                                   name="email"
                                   autoComplete="given-name"
                                   placeholder="Email address"
-                                  value={currentUser?.email}
+                                  defaultValue={currentUser?.email}
                                   className="input input-bordered input-neutral w-full rounded-full focus:input-primary"
                                 />
                               </div>

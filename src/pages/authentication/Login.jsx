@@ -48,7 +48,7 @@ function Login() {
         console.log(q);
         // Separate the users into groups during login
         // if (userType === "admin") {
-        //   navigate('/profile')
+        //   navigate(`/${currentUser.uid}/profile`)
         // } else if (userType === "writer") {
         // } else {
         // }
