@@ -12,6 +12,7 @@ import {
   AiFillEyeInvisible,
   AiOutlineEye,
   AiOutlineMail,
+  AiOutlineArrowLeft
 } from "react-icons/ai";
 import { FaSpinner } from "react-icons/fa";
 
@@ -301,6 +302,20 @@ function Register() {
                     </button>
                   </div>
                 </form>
+                <div>
+                  <Link
+                    to="/"
+                    className="group relative w-full flex justify-center p-3 text-sm font-medium rounded-full text-primary bg-base hover:opacity-70 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                  >
+                    <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+                      <AiOutlineArrowLeft
+                        className="h-5 w-5 text-base group-hover:opacity-70"
+                        aria-hidden="true"
+                      />
+                    </span>
+                    Back to home page
+                  </Link>
+                </div>
               </div>
             </>
           )}

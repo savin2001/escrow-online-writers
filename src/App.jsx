@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
 import Profile from "./pages/admin/Profile";
 import Register from "./pages/authentication/Register";
 import VerifyEmail from "./pages/authentication/VerifyEmail";
@@ -30,7 +29,6 @@ function App() {
   return (
     <Router>
       <AuthProvider value={{ currentUser, timeActive, setTimeActive }}>
-        <Navbar />
         <Routes>
           {/* Default pages */}
           <Route path="*" element={<PageNotFound />} />

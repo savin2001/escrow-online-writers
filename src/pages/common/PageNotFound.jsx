@@ -14,7 +14,7 @@ const PageNotFound = () => {
             to="/"
             className="more-link btn btn-active border-none bg-primary hover:bg-base-100 hover:border-2 hover:border-primary hover:text-primary p-4 rounded-full text-base-100 animate-pulse"
           >
-            Get back to main page
+            Get back home
           </Link>
         </div>
       </div>

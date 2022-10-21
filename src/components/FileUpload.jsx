@@ -1,5 +1,5 @@
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import React, { useState } from "react";
+import { useState } from "react";
 import { FaFileUpload } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useAuthValue } from "../assets/firebase/AuthContext";
@@ -9,28 +9,36 @@ const FileUpload = () => {
   const { currentUser } = useAuthValue();
   const [error, setError] = useState(null);
   const [docPath, setDocPath] = useState(null);
-  const [progress, setProgress] = useState(null);
+  const [progress, setProgress] = useState(0);
   const fileHandler = (e) => {
     e && e.preventDefault();
+    // Grab the file
     const file = e.target[0].files[0];
     uploadFile(file);
   };
   const uploadFile = (file) => {
+    // If no file is selected then throw an error
     if (!file) {
       return setError("Kindly choose a file for upload");
     }
-    const storageRef = ref(store, `/files/${currentUser.uid}/${file.name}`);
+    // Continue if file is selected
+    // Create a directory URL where the file shall be stored
+    const storageRef = ref(store, `/${currentUser.uid}/files/${file.name}`);
+    // Upload the file
     const uploadDoc = uploadBytesResumable(storageRef, file);
     uploadDoc.on(
       "state_changed",
       (snapshot) => {
+        // Show upload progress
         const uploadProgress =
           Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         setProgress(uploadProgress);
       },
+      //In case of error during uploading
       (err) => {
         setError(err.message);
       },
+      // Get the download path upon successful download 
       () => {
         getDownloadURL(uploadDoc.snapshot.ref).then((url) => setDocPath(url));
       }
@@ -91,6 +99,13 @@ const FileUpload = () => {
                       </Link>
                     </div>
                   )}
+                  {error && (
+                    <div className="mt-12 text-sm uppercase p-4 text-base-100 bg-error text-center rounded-3xl">
+                      <label htmlFor="profile-pic-modal" className="mt-2">
+                        {error}
+                      </label>
+                    </div>
+                  )}
                 </div>
               </>
             ) : (
@@ -114,6 +129,9 @@ const FileUpload = () => {
                               name="file-upload"
                               type="file"
                               className="file:btn file:btn-sm file:btn-primary file:rounded-2xl"
+                              onClick={() => {
+                                setError(null);
+                              }}
                             />
                           </label>
                         </div>
@@ -123,6 +141,14 @@ const FileUpload = () => {
                       </div>
                     </div>
                   </div>
+                  {/* <div className="flex justify-center items-center">
+                    <div
+                      className="radial-progress text-primary"
+                      style={{ "--value": progress }}
+                    >
+                      {progress} %
+                    </div>
+                  </div> */}
                   <div className="modal-action flex justify-between uppercase">
                     <label
                       htmlFor="profile-pic-modal"
@@ -137,15 +163,15 @@ const FileUpload = () => {
                       upload file
                     </button>
                   </div>
+                  {error && (
+                    <div className="mt-12 text-sm uppercase p-4 text-base-100 bg-error text-center rounded-3xl">
+                      <label htmlFor="profile-pic-modal" className="mt-2">
+                        {error}
+                      </label>
+                    </div>
+                  )}
                 </form>
               </>
-            )}
-            {error && (
-              <div className=" text-sm uppercase p-4 text-base-100 bg-error text-center rounded-3xl">
-                <label htmlFor="profile-pic-modal" className="mt-2">
-                  {error}
-                </label>
-              </div>
             )}
           </div>
         </>
