@@ -12,7 +12,7 @@ import {
   AiFillEyeInvisible,
   AiOutlineEye,
   AiOutlineMail,
-  AiOutlineArrowLeft
+  AiOutlineArrowLeft,
 } from "react-icons/ai";
 import { FaSpinner } from "react-icons/fa";
 
@@ -25,7 +25,7 @@ function Register() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { currentUser, setTimeActive } = useAuthValue();
+  const { setTimeActive } = useAuthValue();
 
   // Password visible
   const checkPassword = () => {
@@ -55,67 +55,97 @@ function Register() {
     setError("");
     if (validatePassword()) {
       // Create a new user with email and password using firebase
-      setLoading(true);
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(async () => {
-          if (userType.length > 0) {
-            try {
-              if (userType === "admin") {
-                const adminRef = doc(db, "users", "admin");
-                await setDoc(
-                  adminRef,
-                  await addDoc(collection(db, "users", "admin", email), {
-                    uid: currentUser.uid,
-                    email: email,
-                  }),
-                  { merge: true }
-                );
-              } else {
-                const writerRef = doc(db, "users", "writer");
-                await setDoc(
-                  writerRef,
-                  await addDoc(collection(db, "users", "writer", email), {
-                    uid: currentUser.uid,
-                    email: email,
-                  }),
-                  { merge: true }
-                );
-              }
-            } catch (e) {
-              setLoading(false);
-              setError("Error adding document: ", e);
-            }
-          }
-        })
-        .then(() => {
-          // if (error.length > 0) {
-          //   setLoading(false);
-          // } else {
-            sendEmailVerification(auth.currentUser)
-              .then(() => {
-                setTimeActive(true);
-                setLoading(false);
-                navigate("/verify-email");
+
+      if (userType.length > 0) {
+        if (userType === "admin") {
+          setLoading(true);
+          createUserWithEmailAndPassword(auth, email, password)
+            .then(async () => {
+              const userRef = collection(db, "admin");
+              const adminRef = doc(userRef, auth.currentUser.uid);
+              await setDoc(
+                adminRef,
+                {
+                  user_type: userType,
+                  email: email,
+                },
+                { merge: true }
+              ).then(() => {
+                // if (error.length > 0) {
+                //   setLoading(false);
+                // } else {
+                sendEmailVerification(auth.currentUser)
+                  .then(() => {
+                    setTimeActive(true);
+                    setLoading(false);
+                    navigate("/verify-email");
+                  })
+                  .catch((err) => {
+                    setLoading(false);
+                    setError(err.message);
+                  });
+                // }
               })
-              .catch((err) => {
-                setLoading(false);
-                setError(err.message);
-              });
-          // }
-        })
-        .catch((err) => {
-          setLoading(false);
-          setEmail("");
-          setPassword("");
-          setConfirmPassword("");
-          setUserType("");
-          setError(err.message);
-        });
+            })
+            .catch
+            ((err) => {
+              setLoading(false);
+              setEmail("");
+              setPassword("");
+              setConfirmPassword("");
+              setUserType("");
+              setError(err.message);
+            })
+        } else {
+          setLoading(true);
+          createUserWithEmailAndPassword(auth, email, password)
+            .then(async () => {
+              const userRef = collection(db, "users");
+              const writerRef = doc(userRef, auth.currentUser.uid);
+              await setDoc(
+                writerRef,
+                {
+                  user_type: userType,
+                  email: email,
+                },
+                { merge: true }
+              ).then(() => {
+                // if (error.length > 0) {
+                //   setLoading(false);
+                // } else {
+                sendEmailVerification(auth.currentUser)
+                  .then(() => {
+                    setTimeActive(true);
+                    setLoading(false);
+                    navigate("/verify-email");
+                  })
+                  .catch((err) => {
+                    setLoading(false);
+                    setError(err.message);
+                  });
+                // }
+              })
+            })
+            .catch
+            ((err) => {
+              setLoading(false);
+              setEmail("");
+              setPassword("");
+              setConfirmPassword("");
+              setUserType("");
+              setError(err.message);
+            })
+        }
+      }
+    } else {
+      setLoading(false);
+      setError("Error adding document! ",);
     }
-    setEmail("");
-    setPassword("");
-    setConfirmPassword("");
-  };
+  }
+
+
+
+
 
   return (
     <div className="container mx-auto">
