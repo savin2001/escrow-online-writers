@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { auth, db } from "../../assets/firebase/firebase";
-import { collection, doc, setDoc, addDoc } from "firebase/firestore";
+import { collection, doc, setDoc } from "firebase/firestore";
 import { useNavigate, Link } from "react-router-dom";
 import {
   createUserWithEmailAndPassword,
@@ -12,11 +12,16 @@ import {
   AiFillEyeInvisible,
   AiOutlineEye,
   AiOutlineMail,
+  AiOutlinePhone,
   AiOutlineArrowLeft,
 } from "react-icons/ai";
 import { FaSpinner } from "react-icons/fa";
+import { MdPersonOutline } from "react-icons/md";
 
 function Register() {
+  const [fName, setFName] = useState("");
+  const [sName, setSName] = useState("");
+  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [userType, setUserType] = useState("");
   const [password, setPassword] = useState("");
@@ -68,12 +73,12 @@ function Register() {
                 {
                   user_type: userType,
                   email: email,
+                  first_name: fName,
+                  second_name: sName,
+                  phone_number: phone,
                 },
                 { merge: true }
               ).then(() => {
-                // if (error.length > 0) {
-                //   setLoading(false);
-                // } else {
                 sendEmailVerification(auth.currentUser)
                   .then(() => {
                     setTimeActive(true);
@@ -84,18 +89,16 @@ function Register() {
                     setLoading(false);
                     setError(err.message);
                   });
-                // }
-              })
+              });
             })
-            .catch
-            ((err) => {
+            .catch((err) => {
               setLoading(false);
               setEmail("");
               setPassword("");
               setConfirmPassword("");
               setUserType("");
               setError(err.message);
-            })
+            });
         } else {
           setLoading(true);
           createUserWithEmailAndPassword(auth, email, password)
@@ -107,12 +110,12 @@ function Register() {
                 {
                   user_type: userType,
                   email: email,
+                  first_name: fName,
+                  second_name: sName,
+                  phone_number: phone,
                 },
                 { merge: true }
               ).then(() => {
-                // if (error.length > 0) {
-                //   setLoading(false);
-                // } else {
                 sendEmailVerification(auth.currentUser)
                   .then(() => {
                     setTimeActive(true);
@@ -123,30 +126,23 @@ function Register() {
                     setLoading(false);
                     setError(err.message);
                   });
-                // }
-              })
+              });
             })
-            .catch
-            ((err) => {
+            .catch((err) => {
               setLoading(false);
               setEmail("");
               setPassword("");
               setConfirmPassword("");
               setUserType("");
               setError(err.message);
-            })
+            });
         }
       }
     } else {
       setLoading(false);
-      setError("Error adding document! ",);
+      setError("Error adding document! ");
     }
-  }
-
-
-
-
-
+  };
   return (
     <div className="container mx-auto">
       <div className="min-h-full max-w-7xl flex items-center justify-center py-12 lg:px-8">
@@ -192,6 +188,56 @@ function Register() {
                     <div className="mb-9">
                       <div className="relative">
                         <label htmlFor="email-address" className="sr-only">
+                          First name
+                        </label>
+                        <label className="cursor-pointer w-8 h-8 absolute top-1/2 transform -translate-y-1/2 right-3 flex justify-center items-center">
+                          <MdPersonOutline className="w-5 h-5 text-neutral" />
+                        </label>
+                        <input
+                          id="first"
+                          type="text"
+                          value={fName}
+                          required
+                          onInvalid={(e) =>
+                            e.target.setCustomValidity("Fill in your name")
+                          }
+                          onInput={(e) => e.target.setCustomValidity("")}
+                          placeholder="First name"
+                          className="input input-bordered input-neutral w-full rounded-full focus:input-primary capitalize"
+                          onChange={(e) => setFName(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="rounded-md shadow-sm">
+                    <div className="mb-9">
+                      <div className="relative">
+                        <label htmlFor="email-address" className="sr-only">
+                          Second name
+                        </label>
+                        <label className="cursor-pointer w-8 h-8 absolute top-1/2 transform -translate-y-1/2 right-3 flex justify-center items-center">
+                          <MdPersonOutline className="w-5 h-5 text-neutral" />
+                        </label>
+                        <input
+                          id="second"
+                          type="text"
+                          value={sName}
+                          required
+                          onInvalid={(e) =>
+                            e.target.setCustomValidity("Fill in your name")
+                          }
+                          onInput={(e) => e.target.setCustomValidity("")}
+                          placeholder="Second name"
+                          className="input input-bordered input-neutral w-full rounded-full focus:input-primary capitalize"
+                          onChange={(e) => setSName(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="rounded-md shadow-sm">
+                    <div className="mb-9">
+                      <div className="relative">
+                        <label htmlFor="email-address" className="sr-only">
                           Email address
                         </label>
                         <label className="cursor-pointer w-8 h-8 absolute top-1/2 transform -translate-y-1/2 right-3 flex justify-center items-center">
@@ -214,6 +260,34 @@ function Register() {
                       </div>
                     </div>
                   </div>
+                  <div className="rounded-md shadow-sm">
+                    <div className="mb-9">
+                      <div className="relative">
+                        <label htmlFor="email-address" className="sr-only">
+                          Phone number
+                        </label>
+                        <label className="cursor-pointer w-8 h-8 absolute top-1/2 transform -translate-y-1/2 right-3 flex justify-center items-center">
+                          <AiOutlinePhone className="w-5 h-5 text-neutral" />
+                        </label>
+                        <input
+                          id="phone"
+                          type="tel"
+                          value={phone}
+                          required
+                          onInvalid={(e) =>
+                            e.target.setCustomValidity(
+                              "Fill in your phone number"
+                            )
+                          }
+                          onInput={(e) => e.target.setCustomValidity("")}
+                          placeholder="Phone number"
+                          className="input input-bordered input-neutral w-full rounded-full focus:input-primary"
+                          onChange={(e) => setPhone(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="rounded-md shadow-sm">
                     <div className="mb-9">
                       <div className="relative">

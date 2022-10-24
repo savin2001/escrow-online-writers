@@ -26,7 +26,14 @@ const SideMenu = () => {
             <Link to={`/:uid/profile`}>My Profile</Link>
           </li>
           <li className="bg-error rounded-md text-base-100">
-            <span onClick={() => signOut(auth)}>Sign Out</span>
+            <span
+              onClick={() => {
+                localStorage.removeItem("upd");
+                signOut(auth);
+              }}
+            >
+              Sign Out
+            </span>
           </li>
         </ul>
       </div>

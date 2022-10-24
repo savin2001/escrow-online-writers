@@ -95,7 +95,10 @@ const Navbar = () => {
           <>
             <span
               className="btn btn-sm btn-error"
-              onClick={() => signOut(auth)}
+              onClick={() => {
+                localStorage.removeItem("upd");
+                signOut(auth);
+              }}
             >
               Sign Out
             </span>

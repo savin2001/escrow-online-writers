@@ -17,6 +17,7 @@ import Dashboard from "./pages/admin/Dashboard";
 import Payment from "./pages/admin/Payment";
 import Tasks from "./pages/admin/Tasks";
 import Writers from "./pages/admin/Writers";
+import OtherDetails from "./pages/authentication/OtherDetails";
 
 function App() {
   // User state
@@ -28,7 +29,7 @@ function App() {
     onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
     });
-  }, []);
+  }, [currentUser]);
 
   return (
     <Router>
@@ -42,34 +43,26 @@ function App() {
               !currentUser?.emailVerified ? (
                 <Home />
               ) : (
-                <Navigate to={`/:uid/profile`} replace />
+                <Navigate to={`/${currentUser.uid}/profile`} replace />
               )
             }
           />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
 
-          <Route
-            path="/login"
-            element={
-              !currentUser?.emailVerified ? (
-                <Login />
-              ) : (
-                <Navigate to={`/:uid/profile`} replace />
-              )
-            }
-          />
+          <Route path="/login" element={<Login />} />
           <Route
             path="/register"
             element={
               !currentUser?.emailVerified ? (
                 <Register />
               ) : (
-                <Navigate to={`/:uid/profile`} replace />
+                <Navigate to={`/${currentUser.uid}/profile`} replace />
               )
             }
           />
           <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/:uid/update-details" element={<OtherDetails />} />
 
           {/* Admin pages */}
           <Route

@@ -5,7 +5,7 @@ import {
   sendEmailVerification,
 } from "firebase/auth";
 import { auth, db } from "../../assets/firebase/firebase";
-import { collection, query, where } from "firebase/firestore";
+import { getDoc, doc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { useAuthValue } from "../../assets/firebase/AuthContext";
 import {
@@ -13,7 +13,7 @@ import {
   AiFillEyeInvisible,
   AiOutlineEye,
   AiOutlineMail,
-  AiOutlineArrowLeft
+  AiOutlineArrowLeft,
 } from "react-icons/ai";
 import { FaSpinner } from "react-icons/fa";
 
@@ -43,15 +43,19 @@ function Login() {
     setLoading(true);
     signInWithEmailAndPassword(auth, email, password)
       .then(async () => {
-        const usersRef = collection(db, "users");
-        const q = query(usersRef, where("user_type", "==", "admin"));
-        console.log(q);
-        // Separate the users into groups during login
-        // if (userType === "admin") {
-        //   navigate(`/${currentUser.uid}/profile`)
-        // } else if (userType === "writer") {
-        // } else {
-        // }
+        const adminRef = doc(db, "admin", auth.currentUser.uid);
+        const docSnap = await getDoc(adminRef);
+        if (docSnap.exists()) {
+          const user = docSnap.data();
+          // Separate the users into groups during login
+          if (user.user_type === userType) {
+            localStorage.setItem("upd", JSON.stringify(user));
+            navigate(`/${auth.currentUser.uid}/profile`);
+          }
+        } else {
+          // doc.data() will be undefined in this case
+          return console.log("No such document!");
+        }
       })
       .then(() => {
         if (!auth.currentUser.emailVerified) {

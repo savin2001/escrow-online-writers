@@ -1,6 +1,6 @@
 import { useAuthValue } from "../../assets/firebase/AuthContext";
 import { useState, useEffect } from "react";
-import { auth } from "../../assets/firebase/firebase";
+import { auth, db } from "../../assets/firebase/firebase";
 import { sendEmailVerification } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineMail } from "react-icons/ai";
@@ -21,7 +21,7 @@ function VerifyEmail() {
         .then(() => {
           if (currentUser?.emailVerified) {
             clearInterval(interval);
-            // Separate the users into groups
+            setLoading(true)
             navigate(`/${currentUser.uid}/profile`);
             // if (userType === "admin") {
             // } else if (userType === "writer") {
@@ -60,7 +60,7 @@ function VerifyEmail() {
   };
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto items-center justify-center">
       <div className="min-h-full max-w-7xl flex items-center justify-center py-12 lg:px-8">
         <div className="mx-3 sm:w-full  md:max-w-md w-full space-y-8  mt-16">
           {loading ? (
@@ -89,8 +89,9 @@ function VerifyEmail() {
                   <span className="text-primary my-12 px-5">
                     {currentUser?.email}
                   </span>
-                </p><p  className="text-neutral mb-4">
-                  Check you inbox or spam for the verification email. 
+                </p>
+                <p className="text-neutral mb-4">
+                  Check you inbox or spam for the verification email.
                 </p>
                 <p className="text-neutral mb-8">
                   Follow the instruction in the email to verify your account
