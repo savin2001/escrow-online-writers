@@ -68,7 +68,7 @@ function Profile() {
               <h3 className="mt-9 lg:text-2xl sm:text-xl text-primary pb-6 text-center">
                 Updating details...
               </h3>
-              <p className="mt-1 text-sm text-accent italic text-center">
+              <p className="mt-1 text-sm text-accent italic text-center max-w-fit">
                 (You will be logged out due to the sensitivity of the details
                 changed)
               </p>
@@ -192,6 +192,15 @@ function Profile() {
                           />
                           <div className="modal">
                             <form onSubmit={update} className="modal-box">
+                              <div className="flex flex-wrap mb-5">
+                                <h3 className="sm:text-md md:text-lg font-bold leading-6 text-primary mr-5 capitalize">
+                                  Change personal details
+                                </h3>
+                                <p className="mt-1 text-sm italic text-error animate-pulse">
+                                  (You will be logged out due to the sensitivity
+                                  of the details changed)
+                                </p>
+                              </div>
                               <input
                                 type="hidden"
                                 name="user_type"

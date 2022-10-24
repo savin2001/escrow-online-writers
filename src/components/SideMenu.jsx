@@ -23,7 +23,7 @@ const SideMenu = () => {
             <Link to={`/${currentUser.uid}/payments`}>Payments</Link>
           </li>
           <li>
-            <Link to={`/:uid/profile`}>My Profile</Link>
+            <Link to={`/${currentUser.uid}/profile`}>My Profile</Link>
           </li>
           <li className="bg-error rounded-md text-base-100">
             <span
