@@ -12,20 +12,13 @@ const ListFiles = () => {
   const { currentUser } = useAuthValue();
   const [error, setError] = useState(null);
   const [docList, setDocList] = useState([]);
-  useEffect(() => {
+
+  // Show the files uploaded
+  const listUploadedFiles = () => {
     const storageRef = ref(store, `/${currentUser.uid}/files`);
     listAll(storageRef)
       .then((res) => {
-        res.prefixes.forEach((folderRef) => {
-          // All the prefixes under storageRef.
-          console.log(folderRef);
-        });
         setDocList(res.items);
-        res.items.forEach((itemRef) => {
-          // All the items under storageRef.
-          // getDownloadURL(itemRef.ref).then((url) => console.log(url));
-          console.log(itemRef);
-        });
       })
       .catch((err) => {
         // Uh-oh, an error occurred!
@@ -34,30 +27,49 @@ const ListFiles = () => {
     return () => {
       null;
     };
-  }, [0]);
-  const downloadDoc = (file) => {
-    if (!file) {
+  };
+  useEffect(() => {
+    listUploadedFiles();
+  }, []);
+
+  // Download files
+  const downloadDoc = (fileName) => {
+    if (!fileName) {
       return setError("Kindly choose a file to download");
     }
-    getDownloadURL(ref(store, `/${currentUser.uid}/files/${file.name}`))
+    getDownloadURL(ref(store, `/${currentUser.uid}/files/${fileName}`))
       .then((url) => {
         // `url` is the download URL for the file
+        window.open(url, "_blank");
         // This can be downloaded directly:
-        const xhr = new XMLHttpRequest();
-        xhr.responseType = "blob";
-        xhr.onload = (event) => {
-          const blob = xhr.response;
-        };
-        xhr.open("GET", url);
-        xhr.send();
+        // const xhr = new XMLHttpRequest();
+        // xhr.responseType = "blob";
+        // xhr.onload = (event) => {
+        //   const blob = xhr.response;
+        // };
+        // xhr.open("GET", url);
+        // xhr.send();
       })
       .catch((err) => {
-        // A full list of error codes
-        setError(err.message);
+        // A list of error codes
+        switch (err.code) {
+          case "storage/object-not-found":
+            setError(err.message);
+            break;
+          case "storage/unauthorized":
+            setError(err.message);
+            break;
+          case "storage/canceled":
+            setError(err.message);
+            break;
+          case "storage/unknown":
+            setError(err.message);
+            break;
+        }
       });
   };
   return (
-    <div className="container mx-auto">
+    <div className="mx-auto">
       <div className="w-full flex items-center justify-center py-12 lg:px-8">
         <div className="overflow-x-auto w-full">
           {error && (
@@ -71,25 +83,25 @@ const ListFiles = () => {
             <table className="table w-full">
               <thead>
                 <tr>
-                  <th>
+                  {/* <th>
                     <label>
                       <input type="checkbox" className="checkbox" />
                     </label>
-                  </th>
+                  </th> */}
                   <th>Name</th>
-                  <th>Size</th>
-                  <th>Last modified</th>
-                  <th>Download Link</th>
+                  <th>Download</th>
+                  {/* <th>Size</th>
+                  <th>Last modified</th> */}
                 </tr>
               </thead>
               <tbody>
                 {docList.map((doc, _index) => (
                   <tr key={_index}>
-                    <th>
+                    {/* <th>
                       <label>
                         <input type="checkbox" className="checkbox" />
                       </label>
-                    </th>
+                    </th> */}
                     <td>
                       <div className="flex items-center space-x-3">
                         <div className="avatar">
@@ -104,21 +116,23 @@ const ListFiles = () => {
                       </div>
                     </td>
                     <td>
+                      <button
+                        className="btn btn-ghost btn-xs"
+                        onClick={() => {
+                          downloadDoc(doc.name);
+                        }}
+                      >
+                        <AiOutlineDownload className="mx-auto h-6 w-6 font-thin" />
+                      </button>
+                    </td>
+                    {/* <td>
                       Zemlak, Daniel and Leannon
                       <br />
                       <span className="badge badge-ghost badge-sm">
                         Desktop Support Technician
                       </span>
                     </td>
-                    <td>Purple</td>
-                    <th>
-                      <button
-                        className="btn btn-ghost btn-xs"
-                        onClick={downloadDoc(doc)}
-                      >
-                        <AiOutlineDownload className="mx-auto h-6 w-6 font-thin" />
-                      </button>
-                    </th>
+                    <td>Purple</td> */}
                   </tr>
                 ))}
               </tbody>

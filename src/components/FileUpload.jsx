@@ -38,14 +38,14 @@ const FileUpload = () => {
       (err) => {
         setError(err.message);
       },
-      // Get the download path upon successful download 
+      // Get the download path upon successful download
       () => {
         getDownloadURL(uploadDoc.snapshot.ref).then((url) => setDocPath(url));
       }
     );
   };
   return (
-    <div className="container mx-auto">
+    <div className=" mx-auto">
       <div className="w-full flex items-center justify-center py-12 lg:px-8">
         <div>
           <label className="block text-md font-semibold text-neutral">
@@ -74,7 +74,7 @@ const FileUpload = () => {
               <>
                 <div className="modal-box flex flex-col items-center justify-around">
                   <h3 className="block text-md font-semibold text-neutral mb-9">
-                    File uploading
+                    File upload{progress === 100 ? "ed" : "ing"}
                   </h3>
                   <div className="flex justify-center items-center">
                     <div
