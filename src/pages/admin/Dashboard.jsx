@@ -1,7 +1,16 @@
+import { useState } from "react";
+import { useAuthValue } from "../../assets/firebase/AuthContext";
+import AdminDashboard from "../../components/AdminDashboard";
 import Navbar from "../../components/Navbar";
 import SideMenu from "../../components/SideMenu";
+import WriterDashboard from "../../components/WriterDashboard";
 
 const Dashboard = () => {
+  const { currentUser } = useAuthValue();  
+  const userRole = ["admin", "writer"];
+  let user = JSON.parse(localStorage.getItem("upd"));
+  
+
   return (
     <>
       <Navbar />
@@ -16,18 +25,8 @@ const Dashboard = () => {
                 </h2>
               </header>
               <main className="w-full">
-                <div className="grid grid-cols-12 gap-8">
-                  <div className="col-span-6 md:col-span-3">
-                    <div className="stats shadow bg-primary text-primary-content">
-                      <div className="stat">
-                        <div className="stat-title">Total Page Views</div>
-                        <div className="stat-value">89,400</div>
-                        <div className="stat-desc">
-                          21% more than last month
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-accent border-dashed rounded-md">
+                  {user.user_type === userRole[0] ? (<AdminDashboard currentUser={currentUser}  />):(<WriterDashboard currentUser={currentUser}/>)}
                 </div>
               </main>
             </div>

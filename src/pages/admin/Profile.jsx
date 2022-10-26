@@ -29,7 +29,7 @@ function Profile() {
       setUserType(user.user_type);
     } else {
       // doc.data() will be undefined in this case
-      console.log("No such document!");
+      setError("No user found!");
     }
   }, [currentUser]);
 
