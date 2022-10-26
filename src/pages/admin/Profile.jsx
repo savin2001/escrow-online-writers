@@ -4,10 +4,9 @@ import ListFiles from "../../components/ListFiles";
 import Navbar from "../../components/Navbar";
 import SideMenu from "../../components/SideMenu";
 import { auth, db } from "../../assets/firebase/firebase";
-import { getDoc, doc, collection, setDoc } from "firebase/firestore";
+import { doc, collection, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { signOut, updateEmail } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
 import { FaSpinner } from "react-icons/fa";
 
 function Profile() {
@@ -16,10 +15,10 @@ function Profile() {
   const [sName, setSName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const userRole = ["admin", "writer"];
   const [userType, setUserType] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
   useEffect(() => {
     if (currentUser) {
       let user = JSON.parse(localStorage.getItem("upd"));
@@ -40,9 +39,15 @@ function Profile() {
     setLoading(true);
     updateEmail(auth.currentUser, email)
       .then(async () => {
-        const userRef = collection(db, "admin");
-        const adminRef = doc(userRef, auth.currentUser.uid);
-        await setDoc(adminRef, {
+        let userCollection = null;
+        if (userType === userRole[0]) {
+          userCollection = "admin";
+        } else {
+          userCollection = "users";
+        }
+        const colRef = collection(db, userCollection);
+        const userRef = doc(colRef, auth.currentUser.uid);
+        await setDoc(userRef, {
           user_type: userType,
           email: email,
           first_name: fName,
@@ -55,6 +60,7 @@ function Profile() {
         signOut(auth);
       })
       .catch((err) => {
+        setLoading(false);
         setError(err.message);
       });
   };
@@ -201,14 +207,28 @@ function Profile() {
                                   of the details changed)
                                 </p>
                               </div>
-                              <input
-                                type="hidden"
-                                name="user_type"
-                                value={userType}
-                                onChange={(e) => setUserType(e.target.value)}
-                              />
+
                               <div className="details">
                                 <div className="grid grid-cols-6 gap-8">
+                                  <div className="col-span-6 relative">
+                                    <label
+                                      htmlFor="email-address"
+                                      className="sr-only"
+                                    >
+                                      Email address
+                                    </label>
+                                    <input
+                                      type="text"
+                                      id="email-address"
+                                      name="email"
+                                      autoComplete="given-name"
+                                      placeholder="Email address"
+                                      value={email}
+                                      disabled
+                                      onChange={(e) => setEmail(e.target.value)}
+                                      className="input input-bordered input-neutral w-full rounded-full focus:input-primary"
+                                    />
+                                  </div>
                                   <div className="col-span-6 md:col-span-3 relative">
                                     <label
                                       htmlFor="first_name"
@@ -248,22 +268,20 @@ function Profile() {
                                   </div>
 
                                   <div className="col-span-6 md:col-span-3 relative">
-                                    <label
-                                      htmlFor="email-address"
-                                      className="sr-only"
-                                    >
-                                      Email address
+                                    <label htmlFor="phone" className="sr-only">
+                                      User type
                                     </label>
                                     <input
                                       type="text"
-                                      id="email-address"
-                                      name="email"
-                                      autoComplete="given-name"
-                                      placeholder="Email address"
-                                      value={email}
+                                      id="user-type"
+                                      name="user-type"
+                                      value={userType}
+                                      onChange={(e) =>
+                                        setUserType(e.target.value)
+                                      }
                                       disabled
-                                      onChange={(e) => setEmail(e.target.value)}
-                                      className="input input-bordered input-neutral w-full rounded-full focus:input-primary"
+                                      placeholder="User type"
+                                      className="input input-bordered input-neutral w-full rounded-full focus:input-primary capitalize"
                                     />
                                   </div>
                                   <div className="col-span-6 md:col-span-3 relative">

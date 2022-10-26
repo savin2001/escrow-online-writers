@@ -43,21 +43,30 @@ function App() {
               !currentUser?.emailVerified ? (
                 <Home />
               ) : (
-                <Navigate to={`/${currentUser.uid}/profile`} replace />
+                <Navigate to={`/${currentUser.uid}/dashboard`} replace />
               )
             }
           />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
 
-          <Route path="/login" element={<Login />} />
+          <Route
+            path="/login"
+            element={
+              !currentUser?.emailVerified ? (
+                <Login />
+              ) : (
+                <Navigate to={`/${currentUser.uid}/dashboard`} replace />
+              )
+            }
+          />
           <Route
             path="/register"
             element={
               !currentUser?.emailVerified ? (
                 <Register />
               ) : (
-                <Navigate to={`/${currentUser.uid}/profile`} replace />
+                <Navigate to={`/${currentUser.uid}/dashboard`} replace />
               )
             }
           />

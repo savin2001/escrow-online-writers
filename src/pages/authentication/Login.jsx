@@ -22,7 +22,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [visibility, setVisibility] = useState(false);
-  const [userType, setUserType] = useState("admin");
+  const [userType, setUserType] = useState(['admin', 'writer']);
   const [error, setError] = useState("");
   const { setTimeActive } = useAuthValue();
   const navigate = useNavigate();
@@ -43,18 +43,25 @@ function Login() {
     setLoading(true);
     signInWithEmailAndPassword(auth, email, password)
       .then(async () => {
+        // Check if the user is admin
         const adminRef = doc(db, "admin", auth.currentUser.uid);
-        const docSnap = await getDoc(adminRef);
-        if (docSnap.exists()) {
-          const user = docSnap.data();
-          // Separate the users into groups during login
-          if (user.user_type === userType) {
+        const adminSnap = await getDoc(adminRef);
+        if (adminSnap.exists()) {
+          const user = adminSnap.data();
+          if (user.user_type === userType[0]) {
             localStorage.setItem("upd", JSON.stringify(user));
-            navigate(`/${auth.currentUser.uid}/profile`);
+            navigate(`/${auth.currentUser.uid}/dashboard`);
           }
-        } else {
-          // doc.data() will be undefined in this case
-          return console.log("No such document!");
+        } else {          
+          const writerRef = doc(db, "users", auth.currentUser.uid);
+          const writerSnap = await getDoc(writerRef);
+          if (writerSnap.exists()) {
+            const user = writerSnap.data();
+            if (user.user_type === userType[1]) {
+              localStorage.setItem("upd", JSON.stringify(user));
+              navigate(`/${auth.currentUser.uid}/dashboard`);
+            }
+          }
         }
       })
       .then(() => {

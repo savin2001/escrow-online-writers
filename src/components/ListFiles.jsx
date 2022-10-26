@@ -110,7 +110,7 @@ const ListFiles = () => {
                           </div>
                         </div>
                         <div>
-                          <div className="font-bold">{doc.name}</div>
+                          <div className="font-bold text-sm">{doc.name}</div>
                           <div className="text-sm opacity-50">{}</div>
                         </div>
                       </div>

@@ -380,7 +380,7 @@ function Register() {
                           <option defaultValue value={""} disabled>
                             Select user type
                           </option>
-                          <option value={"admin"}>Account Holder</option>
+                          {/* <option value={"admin"}>Account Holder</option> */}
                           <option value={"writer"}>Become a writer</option>
                         </select>
                       </div>
