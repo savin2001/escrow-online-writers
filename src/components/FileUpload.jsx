@@ -1,5 +1,6 @@
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useState } from "react";
+import { AiOutlineUpload } from "react-icons/ai";
 import { FaFileUpload } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useAuthValue } from "../assets/firebase/AuthContext";
@@ -23,7 +24,7 @@ const FileUpload = () => {
     }
     // Continue if file is selected
     // Create a directory URL where the file shall be stored
-    const storageRef = ref(store, `/${currentUser.uid}/files/${file.name}`);
+    const storageRef = ref(store, `/files/${file.name}`);
     // Upload the file
     const uploadDoc = uploadBytesResumable(storageRef, file);
     uploadDoc.on(
@@ -46,20 +47,20 @@ const FileUpload = () => {
   };
   return (
     <div className=" mx-auto">
-      <div className="w-full flex items-center justify-center py-12 lg:px-8">
-        <div>
-          <label className="block text-md font-semibold text-neutral">
-            Upload task
+      <div className="w-full flex items-center justify-start py-12 lg:px-8">
+        <div className="w-full flex justify-between items-center px-6 pt-5 pb-6 border-2 border-accent border-dashed rounded-md">
+          <label className="block text-lg font-semibold text-neutral">
+            Upload new document
           </label>
-          <div className="mt-1 flex flex-col items-center">
+          <div className="flex flex-col items-center">
             <span className="inline-block sm:h-1/4 sm:w-1/3 md:h-1/3 md:w-1/6 rounded-full overflow-hidden bg-secondary hover:shadow-xl">
               <label htmlFor="profile-pic-modal hover:cursor-pointer"></label>
             </span>
             <label
               htmlFor="profile-pic-modal"
-              className="mt-5 btn btn-outline btn-sm btn-primary rounded-2xl"
+              className="mt-5 btn btn-outline btn-primary rounded-full animate-bounce"
             >
-              Choose file
+             <AiOutlineUpload className="mx-auto justify-center h-6 w-6"/>
             </label>
           </div>
         </div>
@@ -89,7 +90,7 @@ const FileUpload = () => {
                   )} */}
                   {progress === 100 && (
                     <div className="modal-action  uppercase">
-                      <Link to={"/"}>
+                      <Link to={`/${currentUser.uid}/tasks`}>
                         <label
                           htmlFor="profile-pic-modal"
                           className="btn btn-sm btn-outline btn-error rounded-2xl"

@@ -327,10 +327,7 @@ function Profile() {
                       </div>
                     </div>
                   </div>
-                  <div className="file-upload w-full">
-                    <FileUpload />
-                    <ListFiles />
-                  </div>
+                  
                 </div>
                 <SideMenu />
               </div>

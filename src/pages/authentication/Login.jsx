@@ -22,7 +22,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [visibility, setVisibility] = useState(false);
-  const [userType, setUserType] = useState(['admin', 'writer']);
+  const [userType, setUserType] = useState(["admin", "writer"]);
   const [error, setError] = useState("");
   const { setTimeActive } = useAuthValue();
   const navigate = useNavigate();
@@ -52,7 +52,7 @@ function Login() {
             localStorage.setItem("upd", JSON.stringify(user));
             navigate(`/${auth.currentUser.uid}/dashboard`);
           }
-        } else {          
+        } else {
           const writerRef = doc(db, "users", auth.currentUser.uid);
           const writerSnap = await getDoc(writerRef);
           if (writerSnap.exists()) {
@@ -84,7 +84,12 @@ function Login() {
         setLoading(false);
         setEmail("");
         setPassword("");
-        setError(err.message);
+        console.log(err);
+        if (err.message === "Firebase: Error (auth/network-request-failed).") {
+          setError("Network error. Check your internet connection");
+        } else {
+          setError(err.message);
+        }
       });
   };
 

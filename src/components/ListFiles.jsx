@@ -15,7 +15,7 @@ const ListFiles = () => {
 
   // Show the files uploaded
   const listUploadedFiles = () => {
-    const storageRef = ref(store, `/${currentUser.uid}/files`);
+    const storageRef = ref(store, `/files`);
     listAll(storageRef)
       .then((res) => {
         setDocList(res.items);
@@ -37,10 +37,11 @@ const ListFiles = () => {
     if (!fileName) {
       return setError("Kindly choose a file to download");
     }
-    getDownloadURL(ref(store, `/${currentUser.uid}/files/${fileName}`))
+    getDownloadURL(ref(store, `/files/${fileName}`))
       .then((url) => {
         // `url` is the download URL for the file
         window.open(url, "_blank");
+        setError("");
         // This can be downloaded directly:
         // const xhr = new XMLHttpRequest();
         // xhr.responseType = "blob";
@@ -80,64 +81,31 @@ const ListFiles = () => {
             </div>
           )}
           {docList.length > 0 ? (
-            <table className="table w-full">
-              <thead>
-                <tr>
-                  {/* <th>
-                    <label>
-                      <input type="checkbox" className="checkbox" />
-                    </label>
-                  </th> */}
-                  <th>Name</th>
-                  <th>Download</th>
-                  {/* <th>Size</th>
-                  <th>Last modified</th> */}
-                </tr>
-              </thead>
-              <tbody>
+            <>
+              <label className="block text-lg font-semibold text-neutral">
+                Uploaded tasks
+              </label>
+              <ul className="menu bg-base-100 w-full">
                 {docList.map((doc, _index) => (
-                  <tr key={_index}>
-                    {/* <th>
-                      <label>
-                        <input type="checkbox" className="checkbox" />
-                      </label>
-                    </th> */}
-                    <td>
-                      <div className="flex items-center space-x-3">
-                        <div className="avatar">
-                          <div className="mask w-12 h-12">
-                            <AiOutlineFile className="mx-auto h-12 w-12 font-thin" />
-                          </div>
-                        </div>
-                        <div>
-                          <div className="font-bold text-sm">{doc.name}</div>
-                          <div className="text-sm opacity-50">{}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <button
-                        className="btn btn-ghost btn-xs"
+                  <>
+                    <li key={_index}>
+                      <div
+                        className="flex flex-row justify-between h-fit p-2"
                         onClick={() => {
                           downloadDoc(doc.name);
                         }}
                       >
-                        <AiOutlineDownload className="mx-auto h-6 w-6 font-thin" />
-                      </button>
-                    </td>
-                    {/* <td>
-                      Zemlak, Daniel and Leannon
-                      <br />
-                      <span className="badge badge-ghost badge-sm">
-                        Desktop Support Technician
-                      </span>
-                    </td>
-                    <td>Purple</td> */}
-                  </tr>
+                        <span className="font-bold text-sm">{doc.name}</span>
+                        <button className="btn btn-link btn-primary rounded-full p-2">
+                          <AiOutlineDownload className="mx-auto justify-center h-6 w-6" />
+                        </button>
+                      </div>
+                    </li>
+                    <hr />
+                  </>
                 ))}
-              </tbody>
-              <tfoot>{/* In case pagination is included */}</tfoot>
-            </table>
+              </ul>
+            </>
           ) : (
             <div className="container mx-auto w-screen mb-10">
               <div className="container mx-auto text-center ">
