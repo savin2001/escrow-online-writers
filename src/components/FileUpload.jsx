@@ -1,15 +1,16 @@
+import { collection, doc, setDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useState } from "react";
 import { AiOutlineUpload } from "react-icons/ai";
 import { FaFileUpload } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useAuthValue } from "../assets/firebase/AuthContext";
-import { store } from "../assets/firebase/firebase";
+import { db, store } from "../assets/firebase/firebase";
 
 const FileUpload = () => {
   const { currentUser } = useAuthValue();
+  let user = JSON.parse(localStorage.getItem("upd"));
   const [error, setError] = useState(null);
-  const [docPath, setDocPath] = useState(null);
   const [progress, setProgress] = useState(0);
   const fileHandler = (e) => {
     e && e.preventDefault();
@@ -39,9 +40,27 @@ const FileUpload = () => {
       (err) => {
         setError(err.message);
       },
-      // Get the download path upon successful download
-      () => {
-        getDownloadURL(uploadDoc.snapshot.ref).then((url) => setDocPath(url));
+      async () => {
+        // Saving document uploaded to the database
+
+        const taskColRef = collection(db, "tasks");
+        const taskRef = doc(taskColRef, file.name);
+        await getDownloadURL(uploadDoc.snapshot.ref).then((url) => {
+          const docPath = url;
+          setDoc(
+            taskRef,
+            {
+              file_name: file.name,
+              uploaded_by: user.email,
+              file_size: file.size,
+              upload_date: new Date(),
+              assigned_to: user.email,
+              download_url: docPath,
+              verification_status: "new",
+            },
+            { merge: true }
+          );
+        });
       }
     );
   };
@@ -60,7 +79,7 @@ const FileUpload = () => {
               htmlFor="profile-pic-modal"
               className="mt-5 btn btn-outline btn-primary rounded-full animate-bounce"
             >
-             <AiOutlineUpload className="mx-auto justify-center h-6 w-6"/>
+              <AiOutlineUpload className="mx-auto justify-center h-6 w-6" />
             </label>
           </div>
         </div>
@@ -90,7 +109,7 @@ const FileUpload = () => {
                   )} */}
                   {progress === 100 && (
                     <div className="modal-action  uppercase">
-                      <Link to={`/${currentUser.uid}/tasks`}>
+                      <Link to={`/${currentUser.uid}/dashboard`}>
                         <label
                           htmlFor="profile-pic-modal"
                           className="btn btn-sm btn-outline btn-error rounded-2xl"

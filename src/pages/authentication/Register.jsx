@@ -103,6 +103,7 @@ function Register() {
           setLoading(true);
           createUserWithEmailAndPassword(auth, email, password)
             .then(async () => {
+              // Creating new user
               const userRef = collection(db, "users");
               const writerRef = doc(userRef, auth.currentUser.uid);
               await setDoc(

@@ -87,22 +87,20 @@ const ListFiles = () => {
               </label>
               <ul className="menu bg-base-100 w-full">
                 {docList.map((doc, _index) => (
-                  <>
-                    <li key={_index}>
-                      <div
-                        className="flex flex-row justify-between h-fit p-2"
-                        onClick={() => {
-                          downloadDoc(doc.name);
-                        }}
-                      >
-                        <span className="font-bold text-sm">{doc.name}</span>
-                        <button className="btn btn-link btn-primary rounded-full p-2">
-                          <AiOutlineDownload className="mx-auto justify-center h-6 w-6" />
-                        </button>
-                      </div>
-                    </li>
+                  <li key={_index}>
+                    <div
+                      className="flex flex-row justify-between h-fit p-2"
+                      onClick={() => {
+                        downloadDoc(doc.name);
+                      }}
+                    >
+                      <span className="font-bold text-sm">{doc.name}</span>
+                      <button className="btn btn-link btn-primary rounded-full p-2">
+                        <AiOutlineDownload className="mx-auto justify-center h-6 w-6" />
+                      </button>
+                    </div>
                     <hr />
-                  </>
+                  </li>
                 ))}
               </ul>
             </>
