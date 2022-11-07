@@ -1,36 +1,28 @@
 import { useEffect, useState } from "react";
 import { useAuthValue } from "../assets/firebase/AuthContext";
-import { store } from "../assets/firebase/firebase";
+import { store, db } from "../assets/firebase/firebase";
 import { getDownloadURL, listAll, ref } from "firebase/storage";
 import {
   AiOutlineFile,
   AiOutlineFileUnknown,
   AiOutlineDownload,
 } from "react-icons/ai";
+import useFetchTasks from "./useFetchTasks";
 
 const ListFiles = () => {
-  const { currentUser } = useAuthValue();
   const [error, setError] = useState(null);
   const [docList, setDocList] = useState([]);
 
   // Show the files uploaded
-  const listUploadedFiles = () => {
-    const storageRef = ref(store, `/files`);
-    listAll(storageRef)
-      .then((res) => {
-        setDocList(res.items);
-      })
-      .catch((err) => {
-        // Uh-oh, an error occurred!
-        setError(err.message);
-      });
-    return () => {
-      null;
-    };
-  };
-  useEffect(() => {
-    listUploadedFiles();
-  }, []);
+  const {
+    tasksTotal,
+    newTasksTotal,
+    newTasksList,
+    completedTasksTotal,
+    completedTasksList,
+    verifiedTasksTotal,
+    verifiedTasksList,
+  } = useFetchTasks({ db });
 
   // Download files
   const downloadDoc = (fileName) => {
@@ -80,29 +72,158 @@ const ListFiles = () => {
               </label>
             </div>
           )}
-          {docList.length > 0 ? (
+          {tasksTotal > 0 ? (
             <>
-              <label className="block text-lg font-semibold text-neutral">
-                Uploaded tasks
+              <label className="block text-xl font-semibold text-neutral">
+                Uploaded tasks ({tasksTotal})
               </label>
-              <ul className="menu bg-base-100 w-full">
-                {docList.map((doc, _index) => (
-                  <li key={_index}>
-                    <div
-                      className="flex flex-row justify-between h-fit p-2"
-                      onClick={() => {
-                        downloadDoc(doc.name);
-                      }}
-                    >
-                      <span className="font-bold text-sm">{doc.name}</span>
-                      <button className="btn btn-link btn-primary rounded-full p-2">
-                        <AiOutlineDownload className="mx-auto justify-center h-6 w-6" />
-                      </button>
-                    </div>
-                    <hr />
-                  </li>
-                ))}
-              </ul>
+              <div className="my-3">
+                <div
+                  tabIndex={0}
+                  className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box"
+                >
+                  <div className="collapse-title text-lg font-semibold text-primary">
+                    New tasks ({newTasksTotal})
+                  </div>
+                  <hr />
+                  <div className="collapse-content">
+                    <ul className="menu bg-base-100 w-full">
+                      {newTasksTotal != 0 ? (
+                        <>
+                          {newTasksList.map((task, _index) => (
+                            <li key={_index} title="Click to download">
+                              <div
+                                className="flex flex-row justify-between h-fit p-2"
+                                onClick={() => {
+                                  downloadDoc(task.file_name);
+                                }}
+                              >
+                                <span className="font-bold text-sm">
+                                  {task.file_name}
+                                </span>
+                                <button
+                                  className="btn btn-link btn-primary rounded-full p-2"
+                                  onClick={() => {
+                                    downloadDoc(doc.name);
+                                  }}
+                                >
+                                  <AiOutlineDownload className="mx-auto justify-center h-6 w-6" />
+                                </button>
+                              </div>
+                              <hr />
+                            </li>
+                          ))}
+                        </>
+                      ) : (
+                        <>
+                          <h1 className="mt-8 font-bold">
+                            Seems like you have no items
+                          </h1>
+                          <p className="text-accent">No files found!</p>
+                        </>
+                      )}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div className="my-3">
+                <div
+                  tabIndex={0}
+                  className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box"
+                >
+                  <div className="collapse-title text-lg font-semibold text-primary">
+                    Complete tasks ({completedTasksTotal})
+                  </div>
+                  <hr />
+                  <div className="collapse-content">
+                    <ul className="menu bg-base-100 w-full">
+                      {completedTasksTotal != 0 ? (
+                        <>
+                          {completedTasksList.map((task, _index) => (
+                            <li key={_index} title="Click to download">
+                              <div
+                                className="flex flex-row justify-between h-fit p-2"
+                                onClick={() => {
+                                  downloadDoc(task.file_name);
+                                }}
+                              >
+                                <span className="font-bold text-sm">
+                                  {task.file_name}
+                                </span>
+                                <button
+                                  className="btn btn-link btn-primary rounded-full p-2"
+                                  onClick={() => {
+                                    downloadDoc(doc.name);
+                                  }}
+                                >
+                                  <AiOutlineDownload className="mx-auto justify-center h-6 w-6" />
+                                </button>
+                              </div>
+                              <hr />
+                            </li>
+                          ))}
+                        </>
+                      ) : (
+                        <>
+                          <h1 className="mt-8 font-bold">
+                            Seems like you have no items
+                          </h1>
+                          <p className="text-accent">No files found!</p>
+                        </>
+                      )}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div className="my-3">
+                <div
+                  tabIndex={0}
+                  className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box"
+                >
+                  <div className="collapse-title text-lg font-semibold text-primary">
+                    Verified tasks ({verifiedTasksTotal})
+                  </div>
+                  <hr />
+                  <div className="collapse-content">
+                    <ul className="menu bg-base-100 w-full">
+                      {verifiedTasksTotal != 0 ? (
+                        <>
+                          {verifiedTasksList.map((task, _index) => (
+                            <li key={_index} title="Click to download">
+                              <div
+                                className="flex flex-row justify-between h-fit p-2"
+                                onClick={() => {
+                                  downloadDoc(task.file_name);
+                                }}
+                              >
+                                <span className="font-bold text-sm">
+                                  {task.file_name}
+                                </span>
+                                <button
+                                  className="btn btn-link btn-primary rounded-full p-2"
+                                  onClick={() => {
+                                    downloadDoc(doc.name);
+                                  }}
+                                >
+                                  <AiOutlineDownload className="mx-auto justify-center h-6 w-6" />
+                                </button>
+                              </div>
+                              <hr />
+                            </li>
+                          ))}
+                        </>
+                      ) : (
+                        <>
+                          <h1 className="mt-8 font-bold">
+                            Seems like you have no items
+                          </h1>
+                          <p className="text-accent">No files found!</p>
+                        </>
+                      )}
+                    </ul>
+                  </div>
+                </div>
+              </div>
             </>
           ) : (
             <div className="container mx-auto w-screen mb-10">

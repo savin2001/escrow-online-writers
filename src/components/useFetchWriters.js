@@ -2,8 +2,9 @@ import { db } from "../assets/firebase/firebase";
 import { useState, useEffect } from "react";
 import { collection, getDocs } from "firebase/firestore";
 
-const FetchWriters = () => {
+const useFetchWriters = ({ database }) => {
   const [writersTotal, setWritersTotal] = useState(null);
+  const [writersList, setWritersList] = useState(null);
   const writers = [];
   useEffect(() => {
     fetchBlogs();
@@ -16,10 +17,11 @@ const FetchWriters = () => {
         writers.push(ok.data());
       }
     });
+    setWritersList(writers);
     setWritersTotal(writers.length);
   };
-  // return console.log(writers.length + 1);
-  return <>{writersTotal}</>;
+
+  return { writersTotal, writersList };
 };
 
-export default FetchWriters;
+export default useFetchWriters;

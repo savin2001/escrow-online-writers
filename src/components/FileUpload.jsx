@@ -6,11 +6,14 @@ import { FaFileUpload } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useAuthValue } from "../assets/firebase/AuthContext";
 import { db, store } from "../assets/firebase/firebase";
+import useFetchWriters from "./useFetchWriters";
 
 const FileUpload = () => {
+  const { writersList } = useFetchWriters({ db });
   const { currentUser } = useAuthValue();
   let user = JSON.parse(localStorage.getItem("upd"));
   const [error, setError] = useState(null);
+  const [writer, setWriter] = useState('');
   const [progress, setProgress] = useState(0);
   const fileHandler = (e) => {
     e && e.preventDefault();
@@ -54,7 +57,7 @@ const FileUpload = () => {
               uploaded_by: user.email,
               file_size: file.size,
               upload_date: new Date(),
-              assigned_to: user.email,
+              assigned_to: writer,
               download_url: docPath,
               verification_status: "new",
             },
@@ -158,17 +161,29 @@ const FileUpload = () => {
                         <p className="text-xs text-accent">
                           DOC, DOCX, XLS, XLSX, PNG, JPG and PDF up to 10MB
                         </p>
+                        <select
+                          className="select select-primary w-full rounded-full"
+                          value={writer}
+                          onChange={(e) => setWriter(e.target.value)}
+                          required
+                        >
+                          <option defaultValue value={""} disabled>
+                            Assign a writer
+                          </option>
+                          {writersList && (
+                            <>
+                              {writersList.map((writer, _index) => (
+                                <option value={writer.email} key={_index}>
+                                  {writer.first_name}{" "}{writer.second_name}
+                                </option>
+                              ))}
+                            </>
+                          )}
+                        </select>
                       </div>
                     </div>
                   </div>
-                  {/* <div className="flex justify-center items-center">
-                    <div
-                      className="radial-progress text-primary"
-                      style={{ "--value": progress }}
-                    >
-                      {progress} %
-                    </div>
-                  </div> */}
+
                   <div className="modal-action flex justify-between uppercase">
                     <label
                       htmlFor="profile-pic-modal"
