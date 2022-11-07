@@ -29,6 +29,7 @@ const Dashboard = () => {
                   </h2>
                 </header>
                 <main className="w-full">
+                  
                   <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-accent border-dashed rounded-md">
                     {user.user_type === userRole[0] ? (
                       <AdminDashboard currentUser={currentUser} />

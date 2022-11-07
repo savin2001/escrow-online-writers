@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import FetchWriters from "./FetchWriters";
 
 const AdminDashboard = ({ currentUser }) => {
-  const [writersTotal, setWritersTotal] = useState(null);
+  
   useEffect(() => {
     //  async () => {
     //   const coll = collection(db, "users");
@@ -17,6 +18,7 @@ const AdminDashboard = ({ currentUser }) => {
   }, []);
   return (
     <div className="mb-8">
+      
       <div className="flex sm:flex-wrap md:flex-nowrap sm:justify-center lg:justify-start mb-6 sm:gap-4 lg:gap-8">
         <div className="stats shadow-md w-full sm:max-w-xs bg-base-100 text-neutral">
           <Link to={`/${currentUser.uid}/tasks`}>
@@ -31,7 +33,7 @@ const AdminDashboard = ({ currentUser }) => {
           <Link to={`/${currentUser.uid}/writers`}>
             <div className="stat">
               <div className="stat-title font-bold">Writers</div>
-              <div className="stat-value text-primary">4</div>
+              <div className="stat-value text-primary"><FetchWriters/></div>
               <div className="stat-desc">21% more than last month</div>
             </div>
           </Link>
