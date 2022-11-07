@@ -11,7 +11,6 @@ import useFetchTasks from "./useFetchTasks";
 
 const ListFiles = () => {
   const [error, setError] = useState(null);
-  const [docList, setDocList] = useState([]);
 
   // Show the files uploaded
   const {
