@@ -1,9 +1,10 @@
-import {  useState } from "react";
+import { useState } from "react";
 import { store, db } from "../assets/firebase/firebase";
-import { getDownloadURL,  ref } from "firebase/storage";
+import { getDownloadURL, ref } from "firebase/storage";
 import {
   AiOutlineFileUnknown,
   AiOutlineDownload,
+  AiOutlineUpload,
 } from "react-icons/ai";
 import useFetchTasks from "./useFetchTasks";
 
@@ -58,6 +59,36 @@ const ListFiles = () => {
         }
       });
   };
+
+  // For writers to upload completed files
+  const uploadDoc = (fileName) => {
+    // If no file is selected then throw an error
+    if (!fileName) {
+      return setError("Kindly choose a file to upload");
+    }
+    // If file selected fits the completed pattern then throw an error
+    if (fileName.includes("(completed)")) {
+      // Create a directory URL where the file shall be stored
+      const storageRef = ref(store, `/files/${file.name}`);
+      // Upload the file
+      const uploadDoc = uploadBytesResumable(storageRef, file);
+      uploadDoc.on(
+        "state_changed",
+        (snapshot) => {
+          // Show upload progress
+          const uploadProgress =
+            Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setProgress(uploadProgress);
+        },
+        //In case of error during uploading
+        (err) => {
+          setError(err.message);
+        }
+      );
+    } else {
+      return setError("Kindly ensure the file is saved with (completed)");
+    }
+  };
   return (
     <div className="mx-auto">
       <div className="w-full flex items-center justify-center py-12 lg:px-8">
@@ -88,24 +119,38 @@ const ListFiles = () => {
                       {newTasksTotal != 0 ? (
                         <>
                           {newTasksList.map((task, _index) => (
-                            <li key={_index} title="Click to download">
-                              <div
-                                className="flex flex-row justify-between h-fit p-2"
-                                onClick={() => {
-                                  downloadDoc(task.file_name);
-                                }}
-                              >
-                                <span className="font-bold text-sm">
-                                  {task.file_name}
-                                </span>
-                                <button
-                                  className="btn btn-link btn-primary rounded-full p-2"
+                            <li key={_index}>
+                              <div className="flex flex-row">
+                                <div
+                                  title="Click to download"
+                                  className="flex w-5/6 max-w-full flex-row justify-between h-fit p-2"
                                   onClick={() => {
-                                    downloadDoc(doc.name);
+                                    downloadDoc(task.file_name);
                                   }}
                                 >
-                                  <AiOutlineDownload className="mx-auto justify-center h-6 w-6" />
-                                </button>
+                                  <span className="font-bold text-sm">
+                                    {task.file_name}
+                                  </span>
+                                  <button
+                                    className="btn btn-link btn-primary rounded-full p-2"
+                                    onClick={() => {
+                                      downloadDoc(doc.name);
+                                    }}
+                                  >
+                                    <AiOutlineDownload className="mx-auto justify-center h-6 w-6" />
+                                  </button>
+                                </div>
+                                <div
+                                  className="h-fit w-1/6 items-end justify-center"
+                                  title="Upload completed task"
+                                >
+                                  <label
+                                    htmlFor="profile-pic-modal"
+                                    className="mt-5 btn btn-outline btn-primary rounded-full"
+                                  >
+                                    <AiOutlineUpload className="mx-auto justify-center h-6 w-6" />
+                                  </label>
+                                </div>
                               </div>
                               <hr />
                             </li>
@@ -129,7 +174,7 @@ const ListFiles = () => {
                   className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box"
                 >
                   <div className="collapse-title text-lg font-semibold text-primary">
-                    Complete tasks ({completedTasksTotal})
+                    Completed tasks ({completedTasksTotal})
                   </div>
                   <hr />
                   <div className="collapse-content">
