@@ -4,6 +4,7 @@ import FileUpload from "../../components/FileUpload";
 import ListFiles from "../../components/ListFiles";
 
 const Tasks = () => {
+  let user = JSON.parse(localStorage.getItem("upd"));
   return (
     <>
       <Navbar />
@@ -18,7 +19,11 @@ const Tasks = () => {
                 </h2>
               </header>
               <main className="w-full">
-                <FileUpload />
+                {user.user_type === "admin" && (
+                  <>
+                    <FileUpload />
+                  </>
+                )}
                 <ListFiles />
               </main>
             </div>
