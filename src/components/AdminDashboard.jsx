@@ -1,12 +1,10 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useFetchWriters from "./useFetchWriters";
-import { db } from "../assets/firebase/firebase";
 import useFetchTasks from "./useFetchTasks";
 
 const AdminDashboard = ({ currentUser }) => {
-  const { writersTotal } = useFetchWriters({ db });
-  const { tasksTotal, newTasksTotal,completedTasksTotal,verifiedTasksTotal } = useFetchTasks({ db });
+  const { writersTotal } = useFetchWriters();
+  const { tasksTotal, newTasksTotal,completedTasksTotal,verifiedTasksTotal } = useFetchTasks();
 
   return (
     <div className="mb-8">

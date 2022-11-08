@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
-import { useAuthValue } from "../assets/firebase/AuthContext";
+import {  useState } from "react";
 import { store, db } from "../assets/firebase/firebase";
-import { getDownloadURL, listAll, ref } from "firebase/storage";
+import { getDownloadURL,  ref } from "firebase/storage";
 import {
-  AiOutlineFile,
   AiOutlineFileUnknown,
   AiOutlineDownload,
 } from "react-icons/ai";
@@ -21,7 +19,7 @@ const ListFiles = () => {
     completedTasksList,
     verifiedTasksTotal,
     verifiedTasksList,
-  } = useFetchTasks({ db });
+  } = useFetchTasks();
 
   // Download files
   const downloadDoc = (fileName) => {
@@ -225,14 +223,14 @@ const ListFiles = () => {
               </div>
             </>
           ) : (
-            <div className="container mx-auto w-screen mb-10">
+            <div className="container mx-auto w-full mb-10">
               <div className="container mx-auto text-center ">
                 <h1 className="mt-8 text-xl font-bold">
                   Seems like you have no items
                 </h1>
                 <p className="zoom-area mb-5">
                   Do you want to{" "}
-                  <b className="text-primary underline">
+                  <b className="text-primary underline hover:cursor-pointer">
                     <label htmlFor="profile-pic-modal">upload files</label>
                   </b>
                 </p>

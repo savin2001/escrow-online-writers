@@ -1,8 +1,10 @@
 import { db } from "../assets/firebase/firebase";
 import { useState, useEffect } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { useAuthValue } from "../assets/firebase/AuthContext";
 
-const useFetchTasks = ({ database }) => {
+const useFetchTasks = () => {
+  const { currentUser } = useAuthValue();
   const [tasksTotal, setTasksTotal] = useState(null);
   const [tasksList, setTasksList] = useState(null);
   const [newTasksTotal, setNewTasksTotal] = useState(null);
@@ -20,37 +22,62 @@ const useFetchTasks = ({ database }) => {
   }, []);
   const fetchBlogs = async () => {
     const tasksRef = collection(db, "tasks");
-    const querySnapshot = await getDocs(tasksRef);
-    querySnapshot.forEach((ok) => {
-      if (!tasks.includes(ok.data())) {
-        tasks.push(ok.data());
+    // Categorize tasks for individual writers
+    if (currentUser) {
+      let user = JSON.parse(localStorage.getItem("upd"));
+      if (user.user_type === "writer") {
+        const q = query(
+          tasksRef,
+          where("assigned_to", "==", currentUser.email)
+        );
+        const queryUser = await getDocs(q);
+        queryUser.forEach((ok) => {
+          if (!tasks.includes(ok.data())) {
+            tasks.push(ok.data());
 
-        // Categorize tasks
-        if (ok.data().verification_status === "new") {
-          new_tasks.push(ok.data());
-        } else if (ok.data().verification_status === "completed") {
-          completed_tasks.push(ok.data());
-        } else if (ok.data().verification_status === "verified") {
-          verified_tasks.push(ok.data());
-        }
+            // Categorize tasks
+            if (ok.data().verification_status === "new") {
+              new_tasks.push(ok.data());
+            } else if (ok.data().verification_status === "completed") {
+              completed_tasks.push(ok.data());
+            } else if (ok.data().verification_status === "verified") {
+              verified_tasks.push(ok.data());
+            }
+          }
+        });
+      } else {
+        const querySnapshot = await getDocs(tasksRef);
+        querySnapshot.forEach((ok) => {
+          if (!tasks.includes(ok.data())) {
+            tasks.push(ok.data());
+
+            // Categorize tasks
+            if (ok.data().verification_status === "new") {
+              new_tasks.push(ok.data());
+            } else if (ok.data().verification_status === "completed") {
+              completed_tasks.push(ok.data());
+            } else if (ok.data().verification_status === "verified") {
+              verified_tasks.push(ok.data());
+            }
+          }
+        });
       }
-    });
+      // Total tasks
+      setTasksList(tasks);
+      setTasksTotal(tasks.length);
 
-    // Total tasks
-    setTasksList(tasks);
-    setTasksTotal(tasks.length);
+      // New tasks
+      setNewTasksList(new_tasks);
+      setNewTasksTotal(new_tasks.length);
 
-    // New tasks
-    setNewTasksList(new_tasks);
-    setNewTasksTotal(new_tasks.length);
+      // Completed tasks
+      setCompletedTasksList(completed_tasks);
+      setCompletedTasksTotal(completed_tasks.length);
 
-    // Completed tasks
-    setCompletedTasksList(completed_tasks);
-    setCompletedTasksTotal(completed_tasks.length);
-
-    // Verified tasks
-    setVerifiedTasksList(verified_tasks);
-    setVerifiedTasksTotal(verified_tasks.length);
+      // Verified tasks
+      setVerifiedTasksList(verified_tasks);
+      setVerifiedTasksTotal(verified_tasks.length);
+    }
   };
 
   return {

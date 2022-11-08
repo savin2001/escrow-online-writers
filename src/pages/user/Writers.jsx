@@ -7,7 +7,7 @@ import useFetchWriters from "../../components/useFetchWriters";
 
 const Writers = () => {
   const [error, setError] = useState(null);
-  const { writersTotal, writersList } = useFetchWriters({ db });
+  const { writersTotal, writersList } = useFetchWriters();
 
   return (
     <>
