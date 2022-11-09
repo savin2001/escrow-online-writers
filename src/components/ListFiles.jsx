@@ -1,16 +1,21 @@
 import { useState } from "react";
 import { store, db } from "../assets/firebase/firebase";
-import { getDownloadURL, ref } from "firebase/storage";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { FaFileUpload } from "react-icons/fa";
 import {
   AiOutlineFileUnknown,
   AiOutlineDownload,
   AiOutlineUpload,
 } from "react-icons/ai";
 import useFetchTasks from "./useFetchTasks";
+import { collection, doc, setDoc } from "firebase/firestore";
+import useFetchAdmin from "./useFetchAdmin";
 
 const ListFiles = () => {
   const [error, setError] = useState(null);
-
+  let tsk = null;
+  const [admin, setAdmin] = useState("");
+  let user = JSON.parse(localStorage.getItem("upd"));
   // Show the files uploaded
   const {
     tasksTotal,
@@ -21,6 +26,8 @@ const ListFiles = () => {
     verifiedTasksTotal,
     verifiedTasksList,
   } = useFetchTasks();
+
+  const { adminList } = useFetchAdmin();
 
   // Download files
   const downloadDoc = (fileName) => {
@@ -61,13 +68,22 @@ const ListFiles = () => {
   };
 
   // For writers to upload completed files
-  const uploadDoc = (fileName) => {
+  const fileHandler = (e) => {
+    e && e.preventDefault();
+    // Grab the file
+    const file = e.target[0].files[0];
+    if (tsk) {
+      console.log(tsk);
+      // uploadFile(file, task);
+    }
+  };
+  const uploadFile = (file, fileName) => {
     // If no file is selected then throw an error
-    if (!fileName) {
+    if (!file) {
       return setError("Kindly choose a file to upload");
     }
     // If file selected fits the completed pattern then throw an error
-    if (fileName.includes("(completed)")) {
+    if (file.name.includes("(completed)")) {
       // Create a directory URL where the file shall be stored
       const storageRef = ref(store, `/files/${file.name}`);
       // Upload the file
@@ -78,11 +94,32 @@ const ListFiles = () => {
           // Show upload progress
           const uploadProgress =
             Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setProgress(uploadProgress);
         },
         //In case of error during uploading
         (err) => {
           setError(err.message);
+        },
+        async () => {
+          // Saving document uploaded to the database
+
+          const taskColRef = collection(db, "tasks");
+          const taskRef = doc(taskColRef, fileName);
+          await getDownloadURL(uploadDoc.snapshot.ref).then((url) => {
+            const docPath = url;
+            setDoc(
+              taskRef,
+              {
+                file_name: fileName,
+                uploaded_by: user.email,
+                file_size: file.size,
+                upload_date: new Date(),
+                assigned_to: admin,
+                new_download_url: docPath,
+                verification_status: "completed",
+              },
+              { merge: true }
+            );
+          });
         }
       );
     } else {
@@ -132,25 +169,139 @@ const ListFiles = () => {
                                     {task.file_name}
                                   </span>
                                   <button
-                                    className="btn btn-link btn-primary rounded-full p-2"
+                                    className="btn btn-primary rounded-full p-2"
                                     onClick={() => {
-                                      downloadDoc(doc.name);
+                                      downloadDoc(task.file_name);
                                     }}
                                   >
                                     <AiOutlineDownload className="mx-auto justify-center h-6 w-6" />
                                   </button>
                                 </div>
-                                <div
-                                  className="h-fit w-1/6 items-end justify-center"
-                                  title="Upload completed task"
-                                >
-                                  <label
-                                    htmlFor="profile-pic-modal"
-                                    className="mt-5 btn btn-outline btn-primary rounded-full"
-                                  >
-                                    <AiOutlineUpload className="mx-auto justify-center h-6 w-6" />
-                                  </label>
-                                </div>
+                                {user.user_type === "writer" && (
+                                  <>
+                                    <div
+                                      className="w-1/6 flex justify-center items-center"
+                                      title="Upload completed task"
+                                    >
+                                      <label
+                                        htmlFor="profile-pic-modal"
+                                        className="btn btn-outline btn-primary rounded-full p-2"
+                                      >
+                                        <AiOutlineUpload
+                                          className="mx-auto justify-center h-6 w-6"
+                                          // onClick={setTsk(task.file_name)}
+                                        />
+                                      </label>
+                                    </div>
+                                    <>
+                                      <input
+                                        type="checkbox"
+                                        id="profile-pic-modal"
+                                        className="modal-toggle"
+                                      />
+                                      <div className="modal">
+                                        <form
+                                          className="modal-box"
+                                          onSubmit={fileHandler}
+                                        >
+                                          <div>
+                                            <label className="block text-md font-semibold text-neutral">
+                                              File upload
+                                            </label>
+                                            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                              <div className="space-y-1 text-center">
+                                                <FaFileUpload className="mx-auto h-12 w-12 text-accent font-thin" />
+
+                                                <div className="flex text-sm text-gray-600">
+                                                  <label
+                                                    htmlFor="file-upload"
+                                                    className="relative cursor-pointer bg-base-100 rounded-md font-medium text-primary hover:underline"
+                                                  >
+                                                    <input
+                                                      id="file-upload"
+                                                      name="file-upload"
+                                                      type="file"
+                                                      className="file:btn file:btn-sm file:btn-primary file:rounded-2xl"
+                                                      onClick={() => {
+                                                        setError(null);
+                                                      }}
+                                                    />
+                                                  </label>
+                                                </div>
+                                                <p className="text-xs text-accent">
+                                                  DOC, DOCX, XLS, XLSX, PNG, JPG
+                                                  and PDF up to 10MB
+                                                </p>
+
+                                                <p className="text-neutral font-semibold my-4">
+                                                  Submitting for{" "}
+                                                  {task.file_name}
+                                                </p>
+
+                                                <select
+                                                  className="select select-primary w-full rounded-full"
+                                                  value={admin}
+                                                  onChange={(e) =>
+                                                    setAdmin(e.target.value)
+                                                  }
+                                                  required
+                                                >
+                                                  <option
+                                                    defaultValue
+                                                    value={""}
+                                                    disabled
+                                                  >
+                                                    Submit to the admin
+                                                  </option>
+                                                  {adminList && (
+                                                    <>
+                                                      {adminList.map(
+                                                        (admin, _index) => (
+                                                          <option
+                                                            value={admin.email}
+                                                            key={_index}
+                                                          >
+                                                            {admin.first_name}{" "}
+                                                            {admin.second_name}
+                                                          </option>
+                                                        )
+                                                      )}
+                                                    </>
+                                                  )}
+                                                </select>
+                                              </div>
+                                            </div>
+                                          </div>
+
+                                          <div className="modal-action flex justify-between uppercase">
+                                            <label
+                                              htmlFor="profile-pic-modal"
+                                              className="btn btn-sm btn-outline btn-error rounded-2xl"
+                                            >
+                                              cancel
+                                            </label>
+                                            <button
+                                              type="submit"
+                                              className="btn btn-sm btn-primary rounded-2xl"
+                                            >
+                                              upload file
+                                            </button>
+                                          </div>
+                                          {error && (
+                                            <div className="mt-12 text-sm uppercase p-4 text-base-100 bg-error text-center rounded-3xl">
+                                              <label
+                                                htmlFor="profile-pic-modal"
+                                                className="mt-2"
+                                              >
+                                                {error}
+                                              </label>
+                                            </div>
+                                          )}
+                                        </form>
+                                      </div>
+                                    </>
+                                  </>
+                                )}
                               </div>
                               <hr />
                             </li>
