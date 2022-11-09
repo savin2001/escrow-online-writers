@@ -73,8 +73,7 @@ const ListFiles = () => {
     // Grab the file
     const file = e.target[0].files[0];
     if (tsk) {
-      console.log(tsk);
-      // uploadFile(file, task);
+      uploadFile(file, tsk);
     }
   };
   const uploadFile = (file, fileName) => {
@@ -109,11 +108,6 @@ const ListFiles = () => {
             setDoc(
               taskRef,
               {
-                file_name: fileName,
-                uploaded_by: user.email,
-                file_size: file.size,
-                upload_date: new Date(),
-                assigned_to: admin,
                 new_download_url: docPath,
                 verification_status: "completed",
               },
@@ -232,11 +226,12 @@ const ListFiles = () => {
                                                   DOC, DOCX, XLS, XLSX, PNG, JPG
                                                   and PDF up to 10MB
                                                 </p>
-
-                                                <p className="text-neutral font-semibold my-4">
-                                                  Submitting for{" "}
-                                                  {task.file_name}
-                                                </p>
+                                                <input
+                                                  type="hidden"
+                                                  name=""
+                                                  value={(tsk = task.file_name)}
+                                                />
+                                                
 
                                                 <select
                                                   className="select select-primary w-full rounded-full"
