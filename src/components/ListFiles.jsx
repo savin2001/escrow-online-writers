@@ -7,6 +7,7 @@ import {
   AiOutlineDownload,
   AiOutlineUpload,
 } from "react-icons/ai";
+import { FiMoreVertical } from "react-icons/fi";
 import useFetchTasks from "./useFetchTasks";
 import { collection, doc, setDoc } from "firebase/firestore";
 import useFetchAdmin from "./useFetchAdmin";
@@ -67,6 +68,17 @@ const ListFiles = () => {
       });
   };
 
+  //
+  const downloadPrevDoc = (fileUrl) => {
+    if (!fileUrl) {
+      return setError("Kindly choose a file to download");
+    } else {
+      // `url` is the download URL for the file
+      window.open(fileUrl, "_blank");
+      setError("");
+    }
+  };
+
   // For writers to upload completed files
   const fileHandler = (e) => {
     e && e.preventDefault();
@@ -108,6 +120,7 @@ const ListFiles = () => {
             setDoc(
               taskRef,
               {
+                file_name: fileName,
                 new_download_url: docPath,
                 verification_status: "completed",
               },
@@ -120,6 +133,21 @@ const ListFiles = () => {
       return setError("Kindly ensure the file is saved with (completed)");
     }
   };
+
+  // For admin to verify task
+  const verifyDoc = async (fileName) => {
+    // Changing verification status
+    const taskColRef = collection(db, "tasks");
+    const taskRef = doc(taskColRef, fileName);
+    await setDoc(
+      taskRef,
+      {
+        verification_status: "verified",
+      },
+      { merge: true }
+    );
+  };
+
   return (
     <div className="mx-auto">
       <div className="w-full flex items-center justify-center py-12 lg:px-8">
@@ -162,6 +190,9 @@ const ListFiles = () => {
                                   <span className="font-bold text-sm">
                                     {task.file_name}
                                   </span>
+                                  {/* <span className="font-bold text-sm">
+                                    {task.file_name}
+                                  </span> */}
                                   <button
                                     className="btn btn-primary rounded-full p-2"
                                     onClick={() => {
@@ -231,7 +262,6 @@ const ListFiles = () => {
                                                   name=""
                                                   value={(tsk = task.file_name)}
                                                 />
-                                                
 
                                                 <select
                                                   className="select select-primary w-full rounded-full"
@@ -314,38 +344,83 @@ const ListFiles = () => {
                   </div>
                 </div>
               </div>
+
               <div className="my-3">
                 <div
                   tabIndex={0}
-                  className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box"
+                  className="collapse collapse-open collapse-arrow border border-base-300 bg-base-100 rounded-box"
                 >
                   <div className="collapse-title text-lg font-semibold text-primary">
                     Completed tasks ({completedTasksTotal})
                   </div>
-                  <hr />
                   <div className="collapse-content">
                     <ul className="menu bg-base-100 w-full">
                       {completedTasksTotal != 0 ? (
                         <>
                           {completedTasksList.map((task, _index) => (
-                            <li key={_index} title="Click to download">
-                              <div
-                                className="flex flex-row justify-between h-fit p-2"
-                                onClick={() => {
-                                  downloadDoc(task.file_name);
-                                }}
-                              >
-                                <span className="font-bold text-sm">
-                                  {task.file_name}
-                                </span>
-                                <button
-                                  className="btn btn-link btn-primary rounded-full p-2"
+                            <li
+                              key={_index}
+                              title="Click to download completed"
+                            >
+                              <div className="flex flex-row">
+                                <div
+                                  className="flex w-5/6 max-w-full flex-row justify-between h-fit p-2"
                                   onClick={() => {
-                                    downloadDoc(doc.name);
+                                    downloadDoc(task.file_name);
                                   }}
                                 >
-                                  <AiOutlineDownload className="mx-auto justify-center h-6 w-6" />
-                                </button>
+                                  <span className="font-bold text-sm">
+                                    {task.file_name}
+                                  </span>
+                                  <button
+                                    className="btn btn-link btn-primary rounded-full p-2"
+                                    onClick={() => {
+                                      downloadDoc(task.file_name);
+                                    }}
+                                  >
+                                    <AiOutlineDownload className="mx-auto justify-center h-6 w-6" />
+                                  </button>
+                                </div>
+                                <div
+                                  className="w-1/6 flex justify-center items-center"
+                                  title="Upload completed task"
+                                >
+                                  <div className="dropdown dropdown-end">
+                                    <label
+                                      tabIndex={0}
+                                      className="btn btn-outline btn-primary rounded-full p-2"
+                                    >
+                                      <FiMoreVertical className="mx-auto justify-center h-6 w-6" />
+                                    </label>
+                                    <ul
+                                      tabIndex={0}
+                                      className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
+                                    >
+                                      <li>
+                                        <button
+                                          className="btn btn-sm btn-ghost"
+                                          onClick={() => {
+                                            downloadPrevDoc(task.download_url);
+                                          }}
+                                        >
+                                          Download original
+                                        </button>
+                                      </li>
+                                      {user.user_type === "admin" && (
+                                        <li>
+                                          <button
+                                            className="btn btn-sm btn-ghost"
+                                            onClick={() => {
+                                              verifyDoc(task.file_name);
+                                            }}
+                                          >
+                                            Verify assignment
+                                          </button>
+                                        </li>
+                                      )}
+                                    </ul>
+                                  </div>
+                                </div>
                               </div>
                               <hr />
                             </li>
