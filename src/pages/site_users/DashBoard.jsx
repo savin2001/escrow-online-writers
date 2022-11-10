@@ -5,7 +5,7 @@ import Navbar from "../../components/Navbar";
 import SideMenu from "../../components/SideMenu";
 import WriterDashboard from "../../components/WriterDashboard";
 
-const Dashboard = () => {
+const Dashboard = ({ currentUser }) => {
   const { currentUser } = useAuthValue();
   const userRole = ["admin", "writer"];
   const navigate = useNavigate();
