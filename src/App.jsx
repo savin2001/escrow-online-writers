@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Profile from "./pages/user/Profile";
+import Profile from "./pages/site_users/Profile";
 import Register from "./pages/authentication/Register";
 import VerifyEmail from "./pages/authentication/VerifyEmail";
 import Login from "./pages/authentication/Login";
@@ -13,10 +13,10 @@ import Home from "./pages/common/Home";
 import About from "./pages/common/About";
 import Contact from "./pages/common/Contact";
 import PageNotFound from "./pages/common/PageNotFound";
-import Dashboard from "./pages/user/Dashboard";
-import Payment from "./pages/user/Payment";
-import Tasks from "./pages/user/Tasks";
-import Writers from "./pages/user/Writers";
+import Dashboard from "./pages/site_users/Dashboard";
+import Payment from "./pages/site_users/Payment";
+import Tasks from "./pages/site_users/Tasks";
+import Writers from "./pages/site_users/Writers";
 import OtherDetails from "./pages/authentication/OtherDetails";
 
 function App() {
