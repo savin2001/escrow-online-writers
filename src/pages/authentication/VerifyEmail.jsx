@@ -21,12 +21,9 @@ function VerifyEmail() {
         .then(() => {
           if (currentUser?.emailVerified) {
             clearInterval(interval);
-            setLoading(true)
+            setLoading(true);
             navigate(`/login`);
-            // if (userType === "admin") {
-            // } else if (userType === "writer") {
-            // } else {
-            // }
+            
           }
         })
         .catch((err) => {

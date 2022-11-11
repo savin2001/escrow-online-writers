@@ -22,7 +22,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [visibility, setVisibility] = useState(false);
-  const [userType, setUserType] = useState(["admin", "writer"]);
+  const userType = ["admin", "writer"];
   const [error, setError] = useState("");
   const { setTimeActive } = useAuthValue();
   const navigate = useNavigate();
@@ -50,7 +50,7 @@ function Login() {
           const user = adminSnap.data();
           if (user.user_type === userType[0]) {
             localStorage.setItem("upd", JSON.stringify(user));
-            navigate(`/${auth.currentUser.uid}/dashboard`);
+            navigate(`/dashboard`);
           }
         } else {
           const writerRef = doc(db, "users", auth.currentUser.uid);
@@ -59,7 +59,7 @@ function Login() {
             const user = writerSnap.data();
             if (user.user_type === userType[1]) {
               localStorage.setItem("upd", JSON.stringify(user));
-              navigate(`/${auth.currentUser.uid}/dashboard`);
+              navigate(`/dashboard`);
             }
           }
         }

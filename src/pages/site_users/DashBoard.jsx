@@ -1,11 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import { useAuthValue } from "../../assets/firebase/AuthContext";
 import AdminDashboard from "../../components/AdminDashboard";
 import Navbar from "../../components/Navbar";
 import SideMenu from "../../components/SideMenu";
 import WriterDashboard from "../../components/WriterDashboard";
 
-const Dashboard = ({ currentUser }) => {
+const Dashboard = () => {
   const userRole = ["admin", "writer"];
   const navigate = useNavigate();
   let user = JSON.parse(localStorage.getItem("upd"));
@@ -30,9 +29,9 @@ const Dashboard = ({ currentUser }) => {
                 <main className="w-full">
                   <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-accent border-dashed rounded-md">
                     {user.user_type === userRole[0] ? (
-                      <AdminDashboard currentUser={currentUser} />
+                      <AdminDashboard />
                     ) : (
-                      <WriterDashboard currentUser={currentUser} />
+                      <WriterDashboard />
                     )}
                   </div>
                 </main>

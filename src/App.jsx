@@ -41,7 +41,7 @@ function App() {
               !currentUser?.emailVerified ? (
                 <Home />
               ) : (
-                <Navigate to={`/${currentUser.uid}/dashboard`} replace />
+                <Navigate to={`/dashboard`} replace />
               )
             }
           />
@@ -51,7 +51,7 @@ function App() {
               !currentUser?.emailVerified ? (
                 <Login />
               ) : (
-                <Navigate to={`/${currentUser.uid}/dashboard`} replace />
+                <Navigate to={`/dashboard`} replace />
               )
             }
           />
@@ -61,17 +61,17 @@ function App() {
               !currentUser?.emailVerified ? (
                 <Register />
               ) : (
-                <Navigate to={`/${currentUser.uid}/dashboard`} replace />
+                <Navigate to={`/dashboard`} replace />
               )
             }
           />
           <Route path="/verify-email" element={<VerifyEmail />} />
-          <Route path="/:uid/update-details" element={<OtherDetails />} />
+          <Route path="/update-details" element={<OtherDetails />} />
 
           {/* Admin pages */}
           <Route
             exact
-            path={`/:uid/dashboard`}
+            path={`/dashboard`}
             element={
               <PrivateRoute>
                 <Dashboard />
@@ -80,7 +80,7 @@ function App() {
           />
           <Route
             exact
-            path={`/:uid/payments`}
+            path={`/payments`}
             element={
               <PrivateRoute>
                 <Payment />
@@ -89,7 +89,7 @@ function App() {
           />
           <Route
             exact
-            path={`/:uid/tasks`}
+            path={`/tasks`}
             element={
               <PrivateRoute>
                 <Tasks />
@@ -98,7 +98,7 @@ function App() {
           />
           <Route
             exact
-            path={`/:uid/writers`}
+            path={`/writers`}
             element={
               <PrivateRoute>
                 <Writers />
@@ -107,7 +107,7 @@ function App() {
           />
           <Route
             exact
-            path={`/:uid/profile`}
+            path={`/profile`}
             element={
               <PrivateRoute>
                 <Profile />

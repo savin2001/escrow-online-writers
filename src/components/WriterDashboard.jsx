@@ -1,14 +1,14 @@
 import { Link } from "react-router-dom";
 import useFetchTasks from "./useFetchTasks";
 
-const WriterDashboard = ({ currentUser }) => {
+const WriterDashboard = () => {
   const { tasksTotal, newTasksTotal, completedTasksTotal, verifiedTasksTotal } =
     useFetchTasks();
   return (
     <div className="mb-8 w-full">
       <div className="flex sm:flex-wrap md:flex-nowrap sm:justify-center lg:justify-start mb-6 sm:gap-4 lg:gap-8">
         <div className="stats shadow-md w-full sm:max-w-xs bg-base-100 text-neutral">
-          <Link to={`/${currentUser.uid}/tasks`}>
+          <Link to={`/tasks`}>
             <div className="stat">
               <div className="stat-title font-bold">Total Tasks</div>
               <div className="stat-value text-primary">{tasksTotal}</div>
@@ -17,7 +17,7 @@ const WriterDashboard = ({ currentUser }) => {
           </Link>
         </div>        
         <div className="stats shadow-md w-full sm:max-w-xs bg-base-100 text-neutral">
-          <Link to={`/${currentUser.uid}/payments`}>
+          <Link to={`/payments`}>
             <div className="stat">
               <div className="stat-title font-bold">Payment</div>
               <div className="stat-value text-primary">89,400</div>
