@@ -59,8 +59,8 @@ const Dashboard = () => {
                         </>
                       ) : (
                         <>
-                        <Navigate to='/' replace/>
-                          {/* <div className="container mx-auto text-center ">
+                        {/* <Navigate to='/' replace/> */}
+                          <div className="container mx-auto text-center ">
                             <h1 className="mt-8">Error fetching data</h1>
                             <p className="zoom-area mb-5">
                               <b>Oopsie!</b> seems like the data was not
@@ -74,7 +74,7 @@ const Dashboard = () => {
                                 Refresh to re-fetch
                               </Link>
                             </div>
-                          </div> */}
+                          </div>
                         </>
                       )}
                     </div>
